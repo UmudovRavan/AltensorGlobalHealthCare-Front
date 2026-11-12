@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Altensor Global Healthcare">
+  <defs>
+    <linearGradient id="alt-outer-grad" x1="12%" y1="15%" x2="88%" y2="85%">
+      <stop offset="0%" stop-color="#56f0d8" />
+      <stop offset="50%" stop-color="#19b5e6" />
+      <stop offset="100%" stop-color="#0b77c2" />
+    </linearGradient>
+    <linearGradient id="alt-inner-grad" x1="15%" y1="20%" x2="85%" y2="85%">
+      <stop offset="0%" stop-color="#021842" />
+      <stop offset="65%" stop-color="#03235c" />
+      <stop offset="100%" stop-color="#053075" />
+    </linearGradient>
+    <linearGradient id="alt-cross-grad" x1="10%" y1="10%" x2="90%" y2="90%">
+      <stop offset="0%" stop-color="#4ef2db" />
+      <stop offset="55%" stop-color="#0fb0db" />
+      <stop offset="100%" stop-color="#5cc8f2" />
+    </linearGradient>
+    <linearGradient id="alt-swoosh-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#032156" />
+      <stop offset="100%" stop-color="#0a66b3" />
+    </linearGradient>
+    <clipPath id="alt-cross-clip">
+      <path d="M390 112 h38 a14 14 0 0 1 14 14 v24 h24 a14 14 0 0 1 14 14 v38 a14 14 0 0 1 -14 14 h-24 v24 a14 14 0 0 1 -14 14 h-38 a14 14 0 0 1 -14 -14 v-24 h-24 a14 14 0 0 1 -14 -14 v-38 a14 14 0 0 1 14 -14 h24 v-24 a14 14 0 0 1 14 -14 Z" />
+    </clipPath>
+  </defs>
+
+  <!-- Outer cyan-blue organic pebble -->
+  <path
+    d="M340 24 C402 24 422 92 430 165 C438 238 454 315 395 398 C335 480 232 500 132 456 C38 415 -4 378 8 308 C20 238 46 155 112 96 C178 38 278 24 340 24 Z"
+    fill="url(#alt-outer-grad)"
+  />
+
+  <!-- Inner deep navy organic pebble -->
+  <path
+    d="M254 68 C345 68 418 128 468 188 C514 244 510 296 462 344 C410 396 310 462 224 462 C132 462 56 364 56 266 C56 168 134 68 254 68 Z"
+    fill="url(#alt-inner-grad)"
+  />
+
+  <!-- White halo border behind medical cross -->
+  <path
+    d="M390 106 h38 a20 20 0 0 1 20 20 v18 h18 a20 20 0 0 1 20 20 v38 a20 20 0 0 1 -20 20 h-18 v18 a20 20 0 0 1 -20 20 h-38 a20 20 0 0 1 -20 -20 v-18 h-18 a20 20 0 0 1 -20 -20 v-38 a20 20 0 0 1 20 -20 h18 v-18 a20 20 0 0 1 20 -20 Z"
+    fill="#ffffff"
+  />
+
+  <!-- Turquoise medical cross -->
+  <path
+    d="M390 112 h38 a14 14 0 0 1 14 14 v24 h24 a14 14 0 0 1 14 14 v38 a14 14 0 0 1 -14 14 h-24 v24 a14 14 0 0 1 -14 14 h-38 a14 14 0 0 1 -14 -14 v-24 h-24 a14 14 0 0 1 -14 -14 v-38 a14 14 0 0 1 14 -14 h24 v-24 a14 14 0 0 1 14 -14 Z"
+    fill="url(#alt-cross-grad)"
+  />
+
+  <!-- White swoosh highlight + navy/blue swoosh arc cutting across cross -->
+  <path
+    d="M358 228 C382 184 426 162 478 150 C432 150 382 172 352 222 Z"
+    fill="#ffffff"
+  />
+  <path
+    d="M356 232 C384 188 430 166 476 154 C462 150 448 150 434 152 C476 138 504 146 496 166 C488 188 426 196 364 238 Z"
+    fill="url(#alt-swoosh-grad)"
+  />
+
+  <!-- Wordmark -->
+  <text
+    x="262"
+    y="282"
+    text-anchor="middle"
+    fill="#ffffff"
+    font-family="'Be Vietnam Pro', 'Montserrat', Arial, sans-serif"
+    font-weight="700"
+    font-size="88"
+    letter-spacing="-2"
+  >Altensor</text>
+  <text
+    x="262"
+    y="328"
+    text-anchor="middle"
+    fill="#ffffff"
+    font-family="'Be Vietnam Pro', 'Montserrat', Arial, sans-serif"
+    font-weight="400"
+    font-size="38"
+    letter-spacing="-0.4"
+  >Global Healthcare</text>
+</svg>
+

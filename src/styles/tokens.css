@@ -1,0 +1,29 @@
+:root {
+  --primary-color: #3665f6;
+  --secondary-color: #7fbb58;
+  --title-color: #0c3a94;
+  --dark-blue: #0a295b;
+  --link: #034ea2;
+  --blue: #005bf4;
+  --primary-border-color: #1264e6;
+  --verified-color: #22d698;
+  --confirm-color: #6bbe47;
+  --green: #6bbe47;
+  --paragraph: #555555;
+  --read: #666666;
+  --grey: #585858;
+  --light-grey: #cccccc;
+  --textarea-border: #c7c7c7;
+  --grey-border: #e8e8e8;
+  --background-grey: #f4f4f4;
+  --red: #d71920;
+  --warning-red: #cc000d;
+
+  --large-radius: 12px;
+  --medium-radius: 8px;
+  --small-radius: 4px;
+
+  --shadow-step-card: 0 37px 20px -18px rgba(0, 0, 0, 0.25);
+  --shadow-popup: 0 31px 10px -22px rgba(0, 0, 0, 0.15);
+  --shadow-bullet: 0 0 8px rgba(0, 0, 0, 0.15);
+}

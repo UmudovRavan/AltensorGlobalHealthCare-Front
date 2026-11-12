@@ -1,0 +1,81 @@
+export const DOCTORS = [
+  {
+    slug: 'dr-damir-haluzan',
+    name: 'Dr. Damir Haluzan',
+    specialty: 'GENERAL SURGERY',
+    clinicSlug: 'preventis',
+    clinicName: 'Preventis',
+    image:
+      'https://www.zagrebmed.com/media/22/medium_4a33f8a4-25b2-4521-be37-b8f2eb8115c3.jpg?date=1685605622',
+    shortBio: '',
+    bio: 'Specialist in general and abdominal surgery with extensive experience in minimally invasive laparoscopic procedures, hernia repair, and surgical diagnostics.',
+    languages: ['English', 'Croatian'],
+    experience: '18+ years of clinical experience',
+  },
+  {
+    slug: 'dr-aida-filipcic',
+    name: 'Dr. Aida Filipcic',
+    specialty: 'PHYSICAL MEDICINE AND REHABILITATION',
+    clinicSlug: 'preventis',
+    clinicName: 'Preventis',
+    image:
+      'https://www.zagrebmed.com/media/22/medium_2586a708-2af3-41dd-8531-1d804752f185.jpeg?date=1668444962',
+    shortBio: '',
+    bio: 'Specialist in physical medicine and rehabilitation focused on post-operative orthopaedic recovery, musculoskeletal diagnostics, and individualized rehabilitation protocols.',
+    languages: ['English', 'Croatian', 'German'],
+    experience: '15+ years of clinical experience',
+  },
+  {
+    slug: 'dr-iva-separovic',
+    name: 'Dr. Iva Separovic',
+    specialty: 'PEDIATRICS, CHILD NEUROLOGY',
+    clinicSlug: 'sinteza',
+    clinicName: 'Polyclinic Sinteza',
+    image:
+      'https://www.zagrebmed.com/media/22/medium_b13e277d-e018-44d0-b45d-a0c15dbbca42.jpg?date=1728912645',
+    shortBio: '',
+    bio: 'Pediatrician and subspecialist in child neurology dedicated to developmental diagnostics, pediatric neurological evaluations, and family-centered care.',
+    languages: ['English', 'Croatian'],
+    experience: '14+ years of clinical experience',
+  },
+  {
+    slug: 'dr-trpimir-vrdoljak',
+    name: 'Dr. Trpimir Vrdoljak',
+    specialty: 'ORTHOPAEDICS',
+    clinicSlug: 'akromion',
+    clinicName: 'Akromion',
+    image:
+      'https://www.zagrebmed.com/media/22/medium_65187cde-2ac5-4833-8440-ec482ea2fdc9.jpg?date=1696355189',
+    shortBio: 'Orthopedic surgeon for hip, knee, shoulder, and sports injuries',
+    bio: 'Senior orthopedic surgeon specializing in hip and knee endoprosthesis, arthroscopic shoulder reconstruction, and complex sports traumatology.',
+    languages: ['English', 'Croatian'],
+    experience: '20+ years of clinical experience',
+  },
+  {
+    slug: 'dr-vedrana-grgurevic',
+    name: 'Dr. Vedrana Grgurevic',
+    specialty: 'ORTHODONTICS, DENTISTRY',
+    clinicSlug: 'poliderma',
+    clinicName: 'Dental & Orthodontic Studio Zagreb',
+    image:
+      'https://www.zagrebmed.com/media/22/medium_4a33f8a4-25b2-4521-be37-b8f2eb8115c3.jpg?date=1685605622',
+    shortBio: 'Specialist in digital clear aligners and fixed orthodontic systems',
+    bio: 'Orthodontics specialist with a focus on 3D digital treatment planning, clear aligner therapy, and comprehensive bite rehabilitation.',
+    languages: ['English', 'Croatian', 'Italian'],
+    experience: '12+ years of clinical experience',
+  },
+  {
+    slug: 'dr-dinko-kaliterna',
+    name: 'Dr. Dinko Kaliterna',
+    specialty: 'DERMATOLOGY, COSMETOLOGY',
+    clinicSlug: 'poliderma',
+    clinicName: 'Poliderma',
+    image:
+      'https://www.zagrebmed.com/media/22/medium_65187cde-2ac5-4833-8440-ec482ea2fdc9.jpg?date=1696355189',
+    shortBio: 'Founder of Poliderma clinic, pioneer in laser dermatology and non-invasive rejuvenation',
+    bio: 'Renowned dermatologist specializing in medical laser technology, anti-ageing dermatology, PRP protocols, and non-surgical aesthetic treatments.',
+    languages: ['English', 'Croatian'],
+    experience: '22+ years of clinical experience',
+  },
+]
+

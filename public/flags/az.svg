@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <clipPath id="az-clip">
+    <circle cx="32" cy="32" r="32" />
+  </clipPath>
+  <g clip-path="url(#az-clip)">
+    <rect y="0" width="64" height="21.333" fill="#00B5E2" />
+    <rect y="21.333" width="64" height="21.334" fill="#EF3340" />
+    <rect y="42.667" width="64" height="21.333" fill="#509E2F" />
+    <circle cx="30.5" cy="32" r="7.2" fill="#ffffff" />
+    <circle cx="32.4" cy="32" r="5.8" fill="#EF3340" />
+    <polygon
+      fill="#ffffff"
+      points="38.2,27.8 39.2,30.4 41.8,29.5 40.3,31.8 42.5,33.4 39.8,33.7 40.1,36.4 38.2,34.4 36.3,36.4 36.6,33.7 33.9,33.4 36.1,31.8 34.6,29.5 37.2,30.4"
+    />
+  </g>
+</svg>
+
