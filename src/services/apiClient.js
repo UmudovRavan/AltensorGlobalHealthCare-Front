@@ -1,5 +1,19 @@
 // Altensor Healthcare — Unified API Client
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
+const API_BASE_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '')
+
+export const API_ORIGIN = /^https?:\/\//i.test(API_BASE_URL)
+  ? new URL(API_BASE_URL).origin
+  : ''
+
+export function resolveMediaUrl(url) {
+  if (!url || typeof url !== 'string') return ''
+  if (/^(https?:|data:|blob:|\/\/)/i.test(url)) return url
+  const normalized = url.startsWith('/') ? url : `/${url}`
+  if (normalized.startsWith('/uploads/') && API_ORIGIN) {
+    return `${API_ORIGIN}${normalized}`
+  }
+  return url
+}
 
 const TOKEN_KEY = 'altensor_access_token'
 const REFRESH_TOKEN_KEY = 'altensor_refresh_token'

@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useUI } from '../hooks/useUI'
 import { CLINICS } from '../data/clinics'
 import { DOCTORS } from '../data/doctors'
-import { apiClient } from '../services/apiClient'
+import { apiClient, resolveMediaUrl } from '../services/apiClient'
 
 function normalizeClinic(c, idx) {
   if (c.image && c.specialties && Array.isArray(c.services)) return c
@@ -23,8 +23,8 @@ function normalizeClinic(c, idx) {
     summary: c.shortDescription || c.description || fallback.summary || fallback.description,
     description: c.description || fallback.description,
     fullDescription: c.description || fallback.fullDescription || fallback.description,
-    image: c.coverImageUrl || c.logoUrl || fallback.image,
-    logoUrl: c.logoUrl || '',
+    image: resolveMediaUrl(c.coverImageUrl) || resolveMediaUrl(c.logoUrl) || fallback.image,
+    logoUrl: resolveMediaUrl(c.logoUrl) || '',
     specialties: c.specialties || servicesList,
     services: servicesList,
     accreditation: c.certificates || fallback.accreditation || 'ISO Certified',
@@ -77,7 +77,7 @@ export default function ClinicsPage() {
             specialty: d.specialization || d.title || 'Specialist',
             clinicSlug: d.clinicId,
             clinicName: d.clinicName,
-            image: d.photoUrl || DOCTORS[idx % DOCTORS.length]?.image,
+            image: resolveMediaUrl(d.photoUrl) || DOCTORS[idx % DOCTORS.length]?.image,
           }))
         )
       })
@@ -103,7 +103,7 @@ export default function ClinicsPage() {
           specialty: d.specialization || d.title || 'Specialist',
           clinicSlug: clinic.id,
           clinicName: clinic.name,
-          image: d.photoUrl || DOCTORS[idx % DOCTORS.length]?.image,
+          image: resolveMediaUrl(d.photoUrl) || DOCTORS[idx % DOCTORS.length]?.image,
         }))
       : null
     const clinicDoctors =

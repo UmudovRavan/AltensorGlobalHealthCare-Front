@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from '../../hooks/useTranslation'
+import { resolveMediaUrl } from '../../services/apiClient'
 
 function ImageDropzone({
   label,
@@ -35,7 +36,7 @@ function ImageDropzone({
     return () => URL.revokeObjectURL(url)
   }, [file])
 
-  const previewSrc = objectUrl || existingUrl || ''
+  const previewSrc = objectUrl || resolveMediaUrl(existingUrl) || ''
 
   const handleFiles = (files) => {
     const picked = files?.[0]

@@ -23,6 +23,7 @@ import AltensorLogo from '../../components/common/AltensorLogo'
 import { useAuth } from '../../hooks/useAuth'
 import { useTranslation } from '../../hooks/useTranslation'
 import adminService, { hasAdminRole } from '../../services/adminService'
+import { resolveMediaUrl } from '../../services/apiClient'
 import AdminLoginPage from './AdminLoginPage'
 
 const INQUIRY_STATUSES = [
@@ -761,7 +762,7 @@ export default function AdminDashboardPage() {
                           {c.coverImageUrl && (
                             <div className="h-[120px] w-full overflow-hidden bg-[#e8edf5]">
                               <img
-                                src={c.coverImageUrl}
+                                src={resolveMediaUrl(c.coverImageUrl)}
                                 alt={c.name}
                                 className="h-full w-full object-cover"
                               />
@@ -771,7 +772,7 @@ export default function AdminDashboardPage() {
                             <div className="flex items-center gap-3">
                               {c.logoUrl && (
                                 <img
-                                  src={c.logoUrl}
+                                  src={resolveMediaUrl(c.logoUrl)}
                                   alt={`${c.name} logo`}
                                   className="h-11 w-11 shrink-0 rounded-[8px] border border-[#e8edf5] bg-white object-contain p-1"
                                 />
@@ -845,7 +846,7 @@ export default function AdminDashboardPage() {
                         <div className="flex items-start gap-4 p-5">
                           {d.photoUrl ? (
                             <img
-                              src={d.photoUrl}
+                              src={resolveMediaUrl(d.photoUrl)}
                               alt={d.fullName}
                               className="h-16 w-16 shrink-0 rounded-full border border-[#dbe4f3] object-cover"
                             />
@@ -998,7 +999,7 @@ export default function AdminDashboardPage() {
                           {pkg.coverImageUrl && (
                             <div className="h-[120px] w-full overflow-hidden bg-[#e8edf5]">
                               <img
-                                src={pkg.coverImageUrl}
+                                src={resolveMediaUrl(pkg.coverImageUrl)}
                                 alt={pkg.title}
                                 className="h-full w-full object-cover"
                               />

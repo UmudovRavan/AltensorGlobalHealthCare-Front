@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useUI } from '../hooks/useUI'
 import { DOCTORS } from '../data/doctors'
-import { apiClient } from '../services/apiClient'
+import { apiClient, resolveMediaUrl } from '../services/apiClient'
 
 function normalizeDoctor(d, idx) {
   if (d.slug && d.name) return d
@@ -17,7 +17,7 @@ function normalizeDoctor(d, idx) {
     experience: d.experienceYears ? `${d.experienceYears}+ years experience` : '',
     bio: d.bio || '',
     languages: d.languages || ['English'],
-    image: d.photoUrl || fallbackImg,
+    image: resolveMediaUrl(d.photoUrl) || fallbackImg,
   }
 }
 
