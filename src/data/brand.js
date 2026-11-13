@@ -3,7 +3,7 @@ export const BRAND = {
   shortName: 'Altensor',
   email: 'info@altensorhealthcare.com',
   phone: '+385 993 875 702',
-  whatsapp: 'https://wa.me/385993875702',
+  whatsapp: 'https://wa.me/994104727578',
   coordinator: {
     name: 'Ivana',
     fullName: 'Ivana Šajn',
