@@ -318,7 +318,7 @@ export default function AdminEntityModal({
                 <div>
                   <label className={labelClass}>City</label>
                   <input
-                    placeholder="Zagreb"
+                    placeholder="Baku"
                     value={clinicForm.city}
                     onChange={(e) => setClinicForm({ ...clinicForm, city: e.target.value })}
                     className={inputClass}

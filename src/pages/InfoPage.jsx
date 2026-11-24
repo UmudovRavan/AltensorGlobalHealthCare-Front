@@ -4,36 +4,25 @@ import { CLINICS } from '../data/clinics'
 import { DOCTORS } from '../data/doctors'
 import { NAV_ALTENSOR_ITEMS } from '../data/navigation'
 import { SERVICE_CATEGORIES } from '../data/services'
+import { useTranslation } from '../hooks/useTranslation'
 import { useUI } from '../hooks/useUI'
 
 const ALTENSOR_CONTENT = {
   'medical-concierge': {
     title: 'Medical Concierge',
-    text: 'Dedicated patient coordinators guide you from your first inquiry through specialist matching, transparent clinic quotes, appointment scheduling, and post-treatment follow-up.',
+    text: 'Dedicated patient coordinators guide you from your first inquiry through specialist matching, transparent clinic quotes, appointment scheduling, and post-treatment follow-up in Baku.',
   },
   'travel-and-accommodation': {
     title: 'Travel & Accommodation',
-    text: 'Discounted partner flights, vetted hotel accommodations near your clinic, private airport transfers, and family travel support organized in one seamless itinerary.',
+    text: 'Partner flights via Aviadesk, vetted hotel accommodations with Gezoba Travel, car rentals via acar.az, e-visa assistance, and travel insurance organized in one seamless itinerary.',
   },
-  'zagreb-gastro': {
-    title: 'Zagreb gastro',
-    text: 'Discover authentic Croatian cuisine, Michelin-recommended bistros, farm-to-table markets like Dolac, and patient-friendly dining options.',
+  'baku-gastro': {
+    title: 'Baku Culinary Guide',
+    text: 'Discover authentic Azerbaijani cuisine, Caspian seaside restaurants, and patient-friendly dining options across Baku.',
   },
-  '10-things-to-do-and-see-in-zagreb': {
-    title: '10 things to do and see in Zagreb',
-    text: 'Stroll the historic Upper Town, visit St. Mark’s Church, ride the iconic funicular, relax in Maksimir Park, and enjoy vibrant coffee-house culture.',
-  },
-  '24-hours-in-zagreb': {
-    title: '24 hours in Zagreb',
-    text: 'A curated one-day itinerary connecting peaceful green promenades, museums, and relaxed dining tailored around medical check-ups or recovery.',
-  },
-  'zagreb-for-families': {
-    title: 'Zagreb for families',
-    text: 'Family-friendly parks, the Zagreb Zoo, interactive museums, and safe pedestrian zones for patients traveling with loved ones.',
-  },
-  'events-in-zagreb': {
-    title: 'Events in Zagreb',
-    text: 'Seasonal cultural festivals, open-air concerts, and Advent in Zagreb experiences throughout the calendar year.',
+  '10-things-to-do-in-baku': {
+    title: '10 things to do and see in Baku',
+    text: 'Stroll the historic Icherisheher (Old City), visit the Heydar Aliyev Center, walk along the Baku Boulevard, and enjoy warm Azerbaijani hospitality.',
   },
 }
 
@@ -48,15 +37,26 @@ const SYMPTOMS = [
 
 export function ZagrebPage() {
   const { subpage } = useParams()
-  const active = ALTENSOR_CONTENT[subpage] || {
+  const { t } = useTranslation()
+  const localizedMap = {
+    'medical-concierge': {
+      title: t('altensorInfo.conciergeTitle'),
+      text: t('altensorInfo.conciergeText'),
+    },
+    'travel-and-accommodation': {
+      title: t('altensorInfo.travelTitle'),
+      text: t('altensorInfo.travelText'),
+    },
+  }
+  const active = localizedMap[subpage] || ALTENSOR_CONTENT[subpage] || {
     title: BRAND.name,
-    text: `${BRAND.name} unites leading private hospitals, polyclinics, and top specialist doctors into one transparent healthcare coordination platform—combining clinical excellence with personalized travel and concierge care.`,
+    text: t('altensorInfo.defaultText'),
   }
 
   return (
     <div className="zm-container py-16">
       <nav className="mb-8 text-[1.3rem] text-[#666666]">
-        <Link to="/en" className="text-[#3665f6] hover:underline">Home</Link> /{' '}
+        <Link to="/en" className="text-[#3665f6] hover:underline">{t('about.home')}</Link> /{' '}
         <Link to="/en/altensor-healthcare" className="text-[#3665f6] hover:underline">
           {BRAND.name}
         </Link>
@@ -73,7 +73,7 @@ export function ZagrebPage() {
                 : 'bg-[#f4f4f4] text-[#0a295b] hover:bg-[#eaf0ff]'
             }`}
           >
-            {BRAND.name} Overview
+            {t('altensorInfo.overviewBtn')}
           </Link>
           {NAV_ALTENSOR_ITEMS.map((item) => (
             <Link
@@ -85,7 +85,7 @@ export function ZagrebPage() {
                   : 'bg-[#f4f4f4] text-[#0a295b] hover:bg-[#eaf0ff]'
               }`}
             >
-              {item.label}
+              {item.labelKey ? t(item.labelKey, item.label) : item.label}
             </Link>
           ))}
         </aside>

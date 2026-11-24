@@ -1,4 +1,5 @@
 import { INTRO_FEATURES } from '../../data/homeData'
+import { useTranslation } from '../../hooks/useTranslation'
 import {
   ChatIcon,
   CustomIcon,
@@ -18,6 +19,8 @@ const ICON_MAP = {
 }
 
 export default function IntroSection() {
+  const { t } = useTranslation()
+
   return (
     <section className="mt-[80px] md:mt-[100px]">
       <div className="zm-container">
@@ -33,7 +36,7 @@ export default function IntroSection() {
                   <Icon className="h-[60px] w-[60px]" />
                 </div>
                 <p className="mt-6 text-[2rem] font-semibold leading-[1.35] text-[#0c3a94]">
-                  {item.text}
+                  {t(`home.intro_${item.icon}`, item.text)}
                 </p>
               </div>
             )

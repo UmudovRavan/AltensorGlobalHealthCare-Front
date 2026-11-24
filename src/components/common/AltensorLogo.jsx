@@ -1,6 +1,6 @@
 import logoSvg from '../../assets/img/logo.svg'
 
-export default function AltensorLogo({ compact = false, className = '' }) {
+export default function AltensorLogo({ compact = false, light = false, className = '' }) {
   if (compact) {
     return (
       <img
@@ -19,10 +19,18 @@ export default function AltensorLogo({ compact = false, className = '' }) {
         className="h-[58px] w-[58px] shrink-0 object-contain"
       />
       <div className="hidden flex-col leading-none xl:flex">
-        <span className="text-[1.6rem] font-black tracking-tight text-[#0c3a94]">
+        <span
+          className={`text-[1.6rem] font-black tracking-tight transition-colors duration-300 ${
+            light ? 'text-white' : 'text-[#0c3a94]'
+          }`}
+        >
           ALTENSOR
         </span>
-        <span className="text-[0.95rem] font-bold tracking-[0.14em] text-[#7fbb58] uppercase">
+        <span
+          className={`text-[0.95rem] font-bold tracking-[0.14em] uppercase transition-colors duration-300 ${
+            light ? 'text-[#9ee372]' : 'text-[#7fbb58]'
+          }`}
+        >
           HEALTHCARE
         </span>
       </div>

@@ -5,20 +5,30 @@
 @import "./styles/tokens.css";
 
 @layer base {
+  :root {
+    --header-h: 72px;
+  }
+
   html {
     font-size: 10px;
     scroll-behavior: smooth;
   }
 
   body {
-    font-family: "Be Vietnam Pro", sans-serif;
+    font-family: "Plus Jakarta Sans", "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
     font-size: 1.6rem;
     font-weight: 400;
     line-height: 1.35;
     background-color: #ffffff;
     color: #000000;
     margin: 0;
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid #3665f6;
+    outline-offset: 2px;
   }
 
   a {
@@ -219,5 +229,269 @@
     border-bottom: 16px solid transparent;
     border-left: 14px solid #ffffff;
     z-index: 3;
+  }
+}
+
+/* ==========================================================================
+   Global Branded Loading Overlay & App Shell Reveal
+   ========================================================================== */
+
+.alt-app-shell[data-ready="false"] {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.alt-app-shell[data-ready="true"] {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.alt-loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: #ffffff;
+  background-image: radial-gradient(
+    circle at 50% 45%,
+    #f3f7ff 0%,
+    #ffffff 62%
+  );
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+  user-select: none;
+}
+
+.alt-loader-overlay.is-exiting {
+  opacity: 0;
+  transform: translate3d(0, -10px, 0) scale(1.015);
+  pointer-events: none;
+}
+
+.alt-loader-aura {
+  position: absolute;
+  width: min(82vw, 560px);
+  height: min(82vw, 560px);
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(54, 101, 246, 0.07) 0%,
+    rgba(127, 187, 88, 0.04) 48%,
+    rgba(255, 255, 255, 0) 74%
+  );
+  animation: altLoaderBreathe 4.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.alt-loader-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 420px;
+}
+
+.alt-loader-emblem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: altLoaderFadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.alt-loader-wordmark {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  animation: altLoaderFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+.alt-loader-divider {
+  margin-top: 20px;
+  height: 1px;
+  width: 120px;
+  background: linear-gradient(
+    90deg,
+    rgba(12, 58, 148, 0) 0%,
+    rgba(54, 101, 246, 0.35) 35%,
+    rgba(127, 187, 88, 0.45) 65%,
+    rgba(12, 58, 148, 0) 100%
+  );
+  transform-origin: center;
+  animation: altLoaderLineExpand 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
+}
+
+.alt-loader-tagline {
+  margin-top: 14px;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #555555;
+  animation: altLoaderFadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
+}
+
+@keyframes altLoaderFadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes altLoaderLineExpand {
+  from {
+    opacity: 0;
+    transform: scaleX(0.25);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes altLoaderBreathe {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alt-app-shell[data-ready="true"] {
+    transition: opacity 0.15s linear;
+  }
+
+  .alt-loader-overlay {
+    transition: opacity 0.15s linear;
+  }
+
+  .alt-loader-overlay.is-exiting {
+    transform: none;
+  }
+
+  .alt-loader-aura,
+  .alt-loader-emblem,
+  .alt-loader-wordmark,
+  .alt-loader-divider,
+  .alt-loader-tagline {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroScrollBob {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 1;
+  }
+}
+
+.hero-reveal {
+  animation: heroFadeUp 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.hero-scroll-line {
+  animation: heroScrollBob 1.9s ease-in-out infinite;
+}
+
+.hero-video-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(5, 20, 50, 0.85) 0%, rgba(5, 20, 50, 0.45) 45%, transparent 75%),
+    linear-gradient(0deg, rgba(5, 20, 50, 0.7) 0%, transparent 50%);
+}
+
+.hero-section {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: calc(var(--header-h, 72px) + 48px) 24px 80px;
+}
+
+.hero-h1 {
+  font-size: clamp(30px, 8.5vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.hero-scroll-indicator {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hero-section {
+    padding: calc(var(--header-h, 72px) + 48px) 6vw 12vh;
+  }
+
+  .hero-h1 {
+    font-size: clamp(34px, 5.5vw, 56px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-h1 {
+    font-size: clamp(36px, 4.6vw, 76px);
+  }
+}
+
+@media (min-width: 768px) and (min-height: 800px) {
+  .hero-scroll-indicator {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal,
+  .hero-scroll-line {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

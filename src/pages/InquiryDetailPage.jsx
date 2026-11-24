@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { SERVICE_CATEGORIES } from '../data/services'
 import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from '../hooks/useTranslation'
 import { apiClient } from '../services/apiClient'
 import patientService from '../services/patientService'
 
@@ -39,6 +40,7 @@ const ALL_PROCEDURES = SERVICE_CATEGORIES.flatMap((cat) =>
 export default function InquiryDetailPage() {
   const { inquiryId } = useParams()
   const { user } = useAuth()
+  const { t } = useTranslation()
 
   const [inquiry, setInquiry] = useState(null)
   const [offers, setOffers] = useState([])
@@ -198,12 +200,14 @@ export default function InquiryDetailPage() {
   if (!inquiry) {
     return (
       <div className="min-h-[75vh] bg-white pt-[140px] text-center">
-        <h2 className="text-[2.6rem] font-bold text-[#0c3a94]">Inquiry Not Found</h2>
+        <h2 className="text-[2.6rem] font-bold text-[#0c3a94]">
+          {t('inquiryDetail.notFound', 'Inquiry Not Found')}
+        </h2>
         <Link
           to="/en/my-profile/inquiries"
           className="mt-6 inline-block rounded-[8px] bg-[#3665f6] px-6 py-3 text-[1.4rem] font-semibold text-white"
         >
-          Back to Inquiries
+          {t('inquiryDetail.backToInquiries', 'Back to Inquiries')}
         </Link>
       </div>
     )
@@ -212,7 +216,7 @@ export default function InquiryDetailPage() {
   const refCode = inquiry.inquiryNumber?.startsWith('#')
     ? inquiry.inquiryNumber
     : `#${inquiry.inquiryNumber || '7551'}`
-  const statusLabel = inquiry.statusText || 'In Review'
+  const statusLabel = inquiry.statusText || t('inquiries.statusInReview', 'In Review')
   const activeOffer = offers[0]
   const isProcDirty = selectedProcTitle !== (inquiry.serviceTitle || '')
   const procedureOptions = Array.from(
@@ -224,7 +228,7 @@ export default function InquiryDetailPage() {
       ].filter(Boolean)
     )
   )
-  const displayName = user?.fullName || inquiry?.patientName || 'Patient'
+  const displayName = user?.fullName || inquiry?.patientName || t('inquiries.patientFallback', 'Patient')
 
   return (
     <div className="min-h-[80vh] bg-white pt-[110px] pb-[120px]">
@@ -244,7 +248,7 @@ export default function InquiryDetailPage() {
             to="/en/my-profile"
             className="font-medium text-[#0a295b] transition-colors hover:text-[#3665f6]"
           >
-            My Profile
+            {t('common.myProfile', 'My Profile')}
           </Link>
           <span className="text-[#c0c0c0]">•</span>
           <span className="font-medium text-[#3665f6]">{refCode}</span>
@@ -255,7 +259,7 @@ export default function InquiryDetailPage() {
           <div className="flex flex-wrap items-center gap-6 text-[1.5rem]">
             <span className="font-bold text-[#0a295b]">{refCode}</span>
             <span className="font-bold text-[#0a295b]">
-              Requested{' '}
+              {t('inquiryDetail.requested', 'Requested')}{' '}
               <span className="ml-2 text-[#3665f6]">
                 {formatShortDate(inquiry.createdAt)}
               </span>
@@ -267,7 +271,7 @@ export default function InquiryDetailPage() {
           </h1>
 
           <div className="mt-2 flex items-center gap-4 text-[1.5rem]">
-            <span className="font-bold text-[#0a295b]">Status</span>
+            <span className="font-bold text-[#0a295b]">{t('inquiryDetail.status', 'Status')}</span>
             <span className="font-bold text-[#3665f6]">{statusLabel}</span>
           </div>
 
@@ -275,9 +279,9 @@ export default function InquiryDetailPage() {
             <span className="inline-block rounded-[8px] bg-[#3665f6] px-7 py-3 text-[1.45rem] font-semibold text-white">
               {activeOffer
                 ? offerAccepted || activeOffer.status === 'Accepted'
-                  ? 'Offer Accepted'
-                  : 'Official Offer Available'
-                : 'No offers available'}
+                  ? t('inquiryDetail.offerAccepted', 'Offer Accepted')
+                  : t('inquiryDetail.officialOfferAvailable', 'Official Offer Available')
+                : t('inquiryDetail.noOffersAvailable', 'No offers available')}
             </span>
           </div>
         </div>
@@ -289,22 +293,22 @@ export default function InquiryDetailPage() {
           {/* LEFT COLUMN: General procedure information + Message + Attached documents */}
           <div>
             <div className="inline-block rounded-[8px] border border-[#3665f6] px-6 py-2.5 text-[1.6rem] font-semibold text-[#3665f6]">
-              General procedure information
+              {t('inquiryDetail.generalProcedureInfo', 'General procedure information')}
             </div>
 
             <div className="mt-8 space-y-6">
-              <div className="grid grid-cols-[170px_1fr] items-center gap-4">
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-[170px_1fr] sm:items-center sm:gap-4">
                 <span className="text-[1.25rem] font-bold tracking-wider text-[#0a295b] uppercase">
-                  CATEGORY
+                  {t('inquiryDetail.category', 'CATEGORY')}
                 </span>
                 <span className="text-[1.5rem] font-semibold text-[#3665f6]">
                   {inquiry.categoryName || 'All-In-One Packages'}
                 </span>
               </div>
 
-              <div className="grid grid-cols-[170px_1fr] items-start gap-4">
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-[170px_1fr] sm:items-start sm:gap-4">
                 <span className="pt-3 text-[1.25rem] font-bold tracking-wider text-[#0a295b] uppercase">
-                  PROCEDURE
+                  {t('inquiryDetail.procedure', 'PROCEDURE')}
                 </span>
                 <div>
                   <select
@@ -330,70 +334,80 @@ export default function InquiryDetailPage() {
                           : 'cursor-not-allowed bg-[#bcbcbc]'
                       }`}
                     >
-                      {updatingProc ? 'Updating...' : 'Update'}
+                      {updatingProc
+                        ? t('inquiryDetail.updating', 'Updating...')
+                        : t('inquiryDetail.update', 'Update')}
                     </button>
                     {procUpdated && (
                       <span className="text-[1.3rem] font-semibold text-[#7fbb58]">
-                        Updated!
+                        {t('inquiryDetail.updated', 'Updated!')}
                       </span>
                     )}
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-[170px_1fr] items-center gap-4">
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-[170px_1fr] sm:items-center sm:gap-4">
                 <span className="text-[1.25rem] font-bold tracking-wider text-[#0a295b] uppercase">
-                  TIMEFRAME
+                  {t('inquiryDetail.timeframe', 'TIMEFRAME')}
                 </span>
                 <span className="text-[1.5rem] font-semibold text-[#3665f6]">
-                  {inquiry.preferredTimeframe || 'Flexible'}
+                  {inquiry.preferredTimeframe || t('inquiryDetail.flexible', 'Flexible')}
                 </span>
               </div>
 
-              <div className="grid grid-cols-[170px_1fr] items-center gap-4">
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-[170px_1fr] sm:items-center sm:gap-4">
                 <span className="text-[1.25rem] font-bold tracking-wider text-[#0a295b] uppercase">
-                  ACCOMMODATION
+                  {t('inquiryDetail.accommodation', 'ACCOMMODATION')}
                 </span>
                 <span className="text-[1.5rem] font-semibold text-[#3665f6]">
-                  {inquiry.needsAccommodation ? 'Yes' : 'None'}
+                  {inquiry.needsAccommodation
+                    ? t('inquiryDetail.yes', 'Yes')
+                    : t('inquiryDetail.none', 'None')}
                 </span>
               </div>
 
-              <div className="grid grid-cols-[170px_1fr] items-center gap-4">
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-[170px_1fr] sm:items-center sm:gap-4">
                 <span className="text-[1.25rem] font-bold tracking-wider text-[#0a295b] uppercase">
-                  AIRPLANE TICKET
+                  {t('inquiryDetail.airplaneTicket', 'AIRPLANE TICKET')}
                 </span>
                 <span className="text-[1.5rem] font-semibold text-[#3665f6]">
-                  {inquiry.needsAirplaneTicket ? 'Yes' : 'No'}
+                  {inquiry.needsAirplaneTicket
+                    ? t('inquiryDetail.yes', 'Yes')
+                    : t('inquiryDetail.no', 'No')}
                 </span>
               </div>
 
-              <div className="grid grid-cols-[170px_1fr] items-center gap-4">
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-[170px_1fr] sm:items-center sm:gap-4">
                 <span className="text-[1.25rem] font-bold tracking-wider text-[#0a295b] uppercase">
-                  AIRPORT TRANSFER
+                  {t('inquiryDetail.airportTransfer', 'AIRPORT TRANSFER')}
                 </span>
                 <span className="text-[1.5rem] font-semibold text-[#3665f6]">
-                  {inquiry.needsAirportTransfer ? 'Yes' : 'No'}
+                  {inquiry.needsAirportTransfer
+                    ? t('inquiryDetail.yes', 'Yes')
+                    : t('inquiryDetail.no', 'No')}
                 </span>
               </div>
             </div>
 
             {/* Patient Initial Message */}
             <div className="mt-10">
-              <h4 className="text-[1.5rem] font-bold text-[#0c3a94]">Message</h4>
+              <h4 className="text-[1.5rem] font-bold text-[#0c3a94]">
+                {t('inquiryDetail.message', 'Message')}
+              </h4>
               <p className="mt-2 whitespace-pre-wrap text-[1.45rem] text-[#555555]">
-                {inquiry.symptoms || 'No message provided.'}
+                {inquiry.symptoms || t('inquiryDetail.noMessageProvided', 'No message provided.')}
               </p>
             </div>
 
             {/* Attached documents */}
             <div className="mt-12">
               <div className="inline-block rounded-[8px] border border-[#3665f6] px-6 py-2.5 text-[1.6rem] font-semibold text-[#3665f6]">
-                Attached documents
+                {t('inquiryDetail.attachedDocuments', 'Attached documents')}
               </div>
 
               <p className="mt-4 text-[1.45rem] text-[#555555]">
-                Please attach your existing medical documentation
+                {t('inquiryDetail.attachDocsHint', 'Please attach your existing medical documentation')}
               </p>
 
               <input
@@ -410,7 +424,11 @@ export default function InquiryDetailPage() {
                 disabled={uploadingDoc}
                 className="zm-btn zm-btn-green mt-4 rounded-[8px] !px-6 !py-2.5 !text-[1.4rem] font-semibold"
               >
-                <span>{uploadingDoc ? 'Uploading...' : 'Add new file'}</span>
+                <span>
+                  {uploadingDoc
+                    ? t('inquiryDetail.uploading', 'Uploading...')
+                    : t('inquiryDetail.addNewFile', 'Add new file')}
+                </span>
               </button>
 
               {inquiry.documents && inquiry.documents.length > 0 && (
@@ -428,7 +446,7 @@ export default function InquiryDetailPage() {
                         onClick={() => handleDeleteDocument(doc.id)}
                         className="ml-3 cursor-pointer text-[1.3rem] font-semibold text-red-500 hover:underline"
                       >
-                        Remove
+                        {t('inquiryDetail.remove', 'Remove')}
                       </button>
                     </div>
                   ))}
@@ -440,18 +458,22 @@ export default function InquiryDetailPage() {
             {activeOffer && (
               <div className="mt-12 rounded-[10px] border border-[#3665f6] bg-[#f8faff] p-6">
                 <h4 className="text-[1.8rem] font-bold text-[#0c3a94]">
-                  Official Clinic Offer — {activeOffer.clinicName}
+                  {t('inquiryDetail.officialClinicOffer', 'Official Clinic Offer')} — {activeOffer.clinicName}
                 </h4>
                 <div className="mt-4 space-y-2 border-t border-[#e5e7eb] pt-4 text-[1.45rem]">
                   <div className="flex justify-between">
-                    <span className="text-[#555555]">Treatment Cost</span>
+                    <span className="text-[#555555]">
+                      {t('inquiryDetail.treatmentCost', 'Treatment Cost')}
+                    </span>
                     <span className="font-bold text-[#0a295b]">
                       € {(activeOffer.medicalTreatmentPrice ?? activeOffer.treatmentPrice ?? 0).toLocaleString()}
                     </span>
                   </div>
                   {(activeOffer.accommodationPrice ?? 0) > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-[#555555]">Accommodation</span>
+                      <span className="text-[#555555]">
+                        {t('inquiryDetail.accommodationLabel', 'Accommodation')}
+                      </span>
                       <span className="font-bold text-[#0a295b]">
                         € {activeOffer.accommodationPrice.toLocaleString()}
                       </span>
@@ -459,7 +481,9 @@ export default function InquiryDetailPage() {
                   )}
                   {(activeOffer.airportTransferPrice ?? 0) > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-[#555555]">Airport Transfer</span>
+                      <span className="text-[#555555]">
+                        {t('inquiryDetail.airportTransferLabel', 'Airport Transfer')}
+                      </span>
                       <span className="font-bold text-[#0a295b]">
                         € {activeOffer.airportTransferPrice.toLocaleString()}
                       </span>
@@ -467,14 +491,18 @@ export default function InquiryDetailPage() {
                   )}
                   {(activeOffer.airplaneTicketPrice ?? 0) > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-[#555555]">Airplane Ticket</span>
+                      <span className="text-[#555555]">
+                        {t('inquiryDetail.airplaneTicketLabel', 'Airplane Ticket')}
+                      </span>
                       <span className="font-bold text-[#0a295b]">
                         € {activeOffer.airplaneTicketPrice.toLocaleString()}
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between border-t border-[#e5e7eb] pt-2">
-                    <span className="font-bold text-[#0a295b]">Total Package</span>
+                    <span className="font-bold text-[#0a295b]">
+                      {t('inquiryDetail.totalPackage', 'Total Package')}
+                    </span>
                     <span className="font-bold text-[#3665f6]">
                       € {(activeOffer.totalPrice ?? 0).toLocaleString()}
                     </span>
@@ -487,14 +515,14 @@ export default function InquiryDetailPage() {
                       onClick={() => handleAcceptOffer(activeOffer.id)}
                       className="zm-btn zm-btn-green rounded-[8px] !px-6 !py-2.5 !text-[1.35rem] font-semibold"
                     >
-                      <span>Accept Offer</span>
+                      <span>{t('inquiryDetail.acceptOffer', 'Accept Offer')}</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeclineOffer(activeOffer.id)}
                       className="cursor-pointer rounded-[8px] border border-[#d1d5db] bg-white px-6 py-2.5 text-[1.35rem] font-semibold text-[#555555] hover:bg-gray-50"
                     >
-                      Decline
+                      {t('inquiryDetail.decline', 'Decline')}
                     </button>
                   </div>
                 )}
@@ -505,12 +533,12 @@ export default function InquiryDetailPage() {
           {/* RIGHT COLUMN: Messages */}
           <div>
             <div className="inline-block rounded-[8px] border border-[#3665f6] px-6 py-2.5 text-[1.6rem] font-semibold text-[#3665f6]">
-              Messages
+              {t('inquiryDetail.messages', 'Messages')}
             </div>
 
             <form onSubmit={handleSendMessage} className="mt-8">
               <label className="block text-[1.4rem] font-semibold text-[#3665f6]">
-                Your message
+                {t('inquiryDetail.yourMessage', 'Your message')}
               </label>
               <textarea
                 rows={5}
@@ -528,7 +556,9 @@ export default function InquiryDetailPage() {
                       : 'cursor-not-allowed bg-[#bcbcbc]'
                   }`}
                 >
-                  {sendingMsg ? 'Sending...' : 'Reply'}
+                  {sendingMsg
+                    ? t('inquiryDetail.sending', 'Sending...')
+                    : t('inquiryDetail.reply', 'Reply')}
                 </button>
               </div>
             </form>
@@ -556,7 +586,9 @@ export default function InquiryDetailPage() {
                         </div>
                         <div>
                           <div className="text-[1.5rem] font-bold leading-tight text-[#3665f6]">
-                            {isPatient ? displayName : msg.senderName || 'Coordinator'}
+                            {isPatient
+                              ? displayName
+                              : msg.senderName || t('inquiryDetail.coordinator', 'Coordinator')}
                           </div>
                           <div className="mt-0.5 text-[1.15rem] font-bold text-[#0a295b]">
                             {formatDateTime(msg.createdAtUtc || msg.sentAt)}

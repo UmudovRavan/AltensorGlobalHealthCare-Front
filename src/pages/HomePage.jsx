@@ -1,4 +1,3 @@
-import BlogSection from '../components/sections/BlogSection'
 import ClinicsSection from '../components/sections/ClinicsSection'
 import CoordinatorSection from '../components/sections/CoordinatorSection'
 import DoctorsSection from '../components/sections/DoctorsSection'
@@ -11,7 +10,6 @@ import RefundSection from '../components/sections/RefundSection'
 import ReviewsSection from '../components/sections/ReviewsSection'
 import SearchSection from '../components/sections/SearchSection'
 import ServicesSection from '../components/sections/ServicesSection'
-import SupportedSection from '../components/sections/SupportedSection'
 
 export default function HomePage() {
   return (
@@ -24,12 +22,10 @@ export default function HomePage() {
       <ClinicsSection />
       <PlanSection />
       <RefundSection />
-      <BlogSection />
       <CoordinatorSection />
       <SearchSection />
       <FaqSection />
       <NewsletterSection />
-      <SupportedSection />
     </>
   )
 }

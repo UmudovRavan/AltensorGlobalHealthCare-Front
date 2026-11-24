@@ -1,21 +1,23 @@
 import { Link } from 'react-router-dom'
 import { BLOG_POSTS } from '../../data/blog'
+import { useTranslation } from '../../hooks/useTranslation'
 import { SwiperArrowIcon } from '../common/ZagrebIcons'
 
 export default function BlogSection() {
+  const { t } = useTranslation()
   return (
     <section className="mt-[150px] md:mt-[220px]">
       <div className="zm-container">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <h2 className="text-[4.8rem] font-semibold leading-[1] text-[#0c3a94] md:text-[8.2rem]">
-            Blog
+            {t('nav.blog', 'Blog')}
           </h2>
 
           <Link
             to="/en/blog"
             className="zm-btn zm-btn-green zm-btn-sm shrink-0 self-start md:self-auto inline-flex items-center gap-2"
           >
-            <span>View all</span>
+            <span>{t('common.viewAll', 'View all')}</span>
             <SwiperArrowIcon className="zm-btn-arrow h-[12px] w-[8px]" />
           </Link>
         </div>

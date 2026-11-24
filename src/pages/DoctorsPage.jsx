@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import SectionLoader from '../components/common/SectionLoader'
+import { useTranslation } from '../hooks/useTranslation'
 import { useUI } from '../hooks/useUI'
 import { DOCTORS } from '../data/doctors'
 import { apiClient, resolveMediaUrl } from '../services/apiClient'
@@ -23,44 +25,51 @@ function normalizeDoctor(d, idx) {
 
 export default function DoctorsPage() {
   const { slug } = useParams()
-  const { openInquiry } = useUI()
+  const { openInquiry, language } = useUI()
+  const { t } = useTranslation()
   const [doctorsList, setDoctorsList] = useState(DOCTORS)
   const [specialtyFilter, setSpecialtyFilter] = useState('')
   const [clinicFilter, setClinicFilter] = useState('')
   const [nameFilter, setNameFilter] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let ignore = false
+    setLoading(true)
 
     async function loadDoctors() {
       try {
-        const res = await apiClient.get('/public/doctors')
-        if (!ignore && Array.isArray(res?.data) && res.data.length > 0) {
-          setDoctorsList(res.data.map((d, idx) => normalizeDoctor(d, idx)))
-          return
+        try {
+          const res = await apiClient.get('/public/doctors')
+          if (!ignore && Array.isArray(res?.data) && res.data.length > 0) {
+            setDoctorsList(res.data.map((d, idx) => normalizeDoctor(d, idx)))
+            return
+          }
+        } catch {
+          // Fallback: aggregate doctors from clinic details when /public/doctors fails
         }
-      } catch {
-        // Fallback: aggregate doctors from clinic details when /public/doctors fails
-      }
 
-      try {
-        const clinicsRes = await apiClient.get('/public/clinics')
-        const clinics = clinicsRes?.data || []
-        const details = await Promise.all(
-          clinics.map((c) => apiClient.get(`/public/clinics/${c.slug}`).catch(() => null))
-        )
-        const aggregated = details.flatMap((d) =>
-          (d?.data?.doctors || []).map((doc) => ({
-            ...doc,
-            clinicId: doc.clinicId || d?.data?.id || '',
-            clinicName: doc.clinicName || d?.data?.name || '',
-          }))
-        )
-        if (!ignore && aggregated.length > 0) {
-          setDoctorsList(aggregated.map((d, idx) => normalizeDoctor(d, idx)))
+        try {
+          const clinicsRes = await apiClient.get('/public/clinics')
+          const clinics = clinicsRes?.data || []
+          const details = await Promise.all(
+            clinics.map((c) => apiClient.get(`/public/clinics/${c.slug}`).catch(() => null))
+          )
+          const aggregated = details.flatMap((d) =>
+            (d?.data?.doctors || []).map((doc) => ({
+              ...doc,
+              clinicId: doc.clinicId || d?.data?.id || '',
+              clinicName: doc.clinicName || d?.data?.name || '',
+            }))
+          )
+          if (!ignore && aggregated.length > 0) {
+            setDoctorsList(aggregated.map((d, idx) => normalizeDoctor(d, idx)))
+          }
+        } catch {
+          // Keep static DOCTORS fallback if backend is unreachable
         }
-      } catch {
-        // Keep static DOCTORS fallback if backend is unreachable
+      } finally {
+        if (!ignore) setLoading(false)
       }
     }
 
@@ -68,26 +77,38 @@ export default function DoctorsPage() {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [language])
 
   if (slug) {
     const doc =
       doctorsList.find((d) => d.slug === slug || d.id === slug) || doctorsList[0]
+    if (!doc) {
+      if (loading) return <SectionLoader fullPage />
+      return (
+        <div className="zm-container py-20 text-center text-[1.6rem] text-[#666666]">
+          {t('home.doctorsEmpty', 'No doctors added yet.')}
+        </div>
+      )
+    }
     return (
       <div className="zm-container py-16">
         <nav className="mb-6 text-[1.3rem] text-[#666666]">
-          <Link to="/en" className="text-[#3665f6] hover:underline">Home</Link> /{' '}
-          <Link to="/en/doctors" className="text-[#3665f6] hover:underline">Doctors</Link> /{' '}
+          <Link to="/en" className="text-[#3665f6] hover:underline">{t('about.home', 'Home')}</Link> /{' '}
+          <Link to="/en/doctors" className="text-[#3665f6] hover:underline">{t('nav.doctors', 'Doctors')}</Link> /{' '}
           <span>{doc.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
-          <div className="overflow-hidden rounded-[12px] border border-[#3665f6] p-4">
-            <img
-              src={doc.image}
-              alt={doc.name}
-              className="h-[340px] w-full rounded-[8px] object-cover object-top"
-            />
+        <div className="grid grid-cols-1 items-start gap-10 md:grid-cols-3">
+          <div className="mx-auto w-full max-w-[340px] overflow-hidden rounded-[12px] border border-[#3665f6] bg-white p-3">
+            <div className="aspect-[9/16] w-full overflow-hidden rounded-[8px] bg-[#f4f7fc]">
+              {doc.image && (
+                <img
+                  src={doc.image}
+                  alt={doc.name}
+                  className="h-full w-full object-contain"
+                />
+              )}
+            </div>
           </div>
 
           <div className="md:col-span-2">
@@ -151,15 +172,15 @@ export default function DoctorsPage() {
   return (
     <div className="zm-container py-16">
       <nav className="mb-6 text-[1.3rem] text-[#666666]">
-        <Link to="/en" className="text-[#3665f6] hover:underline">Home</Link> /{' '}
-        <span>Doctors</span>
+        <Link to="/en" className="text-[#3665f6] hover:underline">{t('about.home')}</Link> /{' '}
+        <span>{t('nav.doctors')}</span>
       </nav>
 
       <h1 className="text-[4.8rem] font-semibold leading-[1] text-[#0c3a94] md:text-[8.2rem]">
-        Doctors
+        {t('nav.doctors')}
       </h1>
       <p className="mt-3 text-[2rem] font-medium text-[#0c3a94] md:text-[2.6rem]">
-        Award winning doctors for medical excellence
+        {t('home.doctorsSubtitle')}
       </p>
 
       {/* Filter Bar */}
@@ -224,47 +245,53 @@ export default function DoctorsPage() {
       </div>
 
       {/* Grid */}
-      <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {filtered.map((doc) => (
-          <div
-            key={doc.slug}
-            className="flex flex-col rounded-[12px] border border-[#3665f6] bg-white p-[20px] transition-shadow hover:shadow-lg"
-          >
-            <Link
-              to={`/en/doctors/${doc.slug}`}
-              className="block h-[200px] w-full overflow-hidden rounded-[8px]"
+      {loading && doctorsList.length === 0 ? (
+        <SectionLoader />
+      ) : (
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {filtered.map((doc) => (
+            <div
+              key={doc.slug}
+              className="flex flex-col rounded-[12px] border border-[#3665f6] bg-white p-[20px] transition-shadow hover:shadow-lg"
             >
-              <img
-                src={doc.image}
-                alt={doc.name}
-                className="h-full w-full object-cover object-top transition-transform duration-300 hover:scale-105"
-              />
-            </Link>
-            <p className="mt-5 text-[1.2rem] font-bold uppercase tracking-wide text-[#3665f6]">
-              {doc.specialty}
-            </p>
-            <Link
-              to={`/en/doctors/${doc.slug}`}
-              className="mt-2 text-[2.4rem] font-semibold leading-[1.2] text-[#0a295b] hover:text-[#3665f6]"
-            >
-              {doc.name}
-            </Link>
-            {doc.shortBio && (
-              <p className="mt-3 text-[1.4rem] leading-relaxed text-[#555555]">
-                {doc.shortBio}
-              </p>
-            )}
-            <div className="mt-auto pt-6 text-right">
               <Link
                 to={`/en/doctors/${doc.slug}`}
-                className="text-[1.2rem] font-bold text-[#3665f6] hover:underline"
+                className="block aspect-[9/16] w-full overflow-hidden rounded-[8px] bg-[#f4f7fc]"
               >
-                View profile
+                {doc.image && (
+                  <img
+                    src={doc.image}
+                    alt={doc.name}
+                    className="h-full w-full object-contain transition-transform duration-300 hover:scale-105"
+                  />
+                )}
               </Link>
+              <p className="mt-5 text-[1.2rem] font-bold uppercase tracking-wide text-[#3665f6]">
+                {doc.specialty}
+              </p>
+              <Link
+                to={`/en/doctors/${doc.slug}`}
+                className="mt-2 text-[2.4rem] font-semibold leading-[1.2] text-[#0a295b] hover:text-[#3665f6]"
+              >
+                {doc.name}
+              </Link>
+              {doc.shortBio && (
+                <p className="mt-3 text-[1.4rem] leading-relaxed text-[#555555]">
+                  {doc.shortBio}
+                </p>
+              )}
+              <div className="mt-auto pt-6 text-right">
+                <Link
+                  to={`/en/doctors/${doc.slug}`}
+                  className="text-[1.2rem] font-bold text-[#3665f6] hover:underline"
+                >
+                  {t('home.viewDoctor', 'View profile')}
+                </Link>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

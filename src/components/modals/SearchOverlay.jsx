@@ -1,6 +1,7 @@
 import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from '../../hooks/useTranslation'
 import { useUI } from '../../hooks/useUI'
 import { CLINICS } from '../../data/clinics'
 import { DOCTORS } from '../../data/doctors'
@@ -9,6 +10,7 @@ import { SERVICE_CATEGORIES } from '../../data/services'
 
 export default function SearchOverlay() {
   const { searchOpen, setSearchOpen } = useUI()
+  const { t } = useTranslation()
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
 
@@ -47,13 +49,13 @@ export default function SearchOverlay() {
         <button
           type="button"
           onClick={() => setSearchOpen(false)}
-          aria-label="Close search"
+          aria-label={t('searchModal.closeAria', 'Close search')}
           className="absolute right-5 top-5 cursor-pointer rounded-full p-2 text-[#555555] hover:bg-slate-100"
         >
           <X className="h-6 w-6" />
         </button>
 
-        <h3 className="mb-4 text-[2.8rem] font-bold text-[#0c3a94]">Search</h3>
+        <h3 className="mb-4 text-[2.8rem] font-bold text-[#0c3a94]">{t('common.search')}</h3>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#3665f6]" />
@@ -62,12 +64,12 @@ export default function SearchOverlay() {
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Type of treatment / offer / doctor"
+              placeholder={t('searchModal.placeholder', 'Type of treatment / offer / doctor')}
               className="w-full rounded-[8px] border border-[#c7c7c7] py-3.5 pr-4 pl-12 text-[1.6rem] outline-none focus:border-[#3665f6]"
             />
           </div>
           <button type="submit" className="zm-btn zm-btn-green">
-            <span>Search</span>
+            <span>{t('common.search', 'Search')}</span>
           </button>
         </form>
 
@@ -76,7 +78,7 @@ export default function SearchOverlay() {
             {matchingServices.length > 0 && (
               <div>
                 <p className="mb-2 text-[1.2rem] font-bold uppercase text-[#3665f6]">
-                  Services
+                  {t('searchModal.services', 'Services')}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {matchingServices.map((s) => (
@@ -95,7 +97,7 @@ export default function SearchOverlay() {
             {matchingDoctors.length > 0 && (
               <div>
                 <p className="mb-2 text-[1.2rem] font-bold uppercase text-[#3665f6]">
-                  Doctors
+                  {t('searchModal.doctors', 'Doctors')}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {matchingDoctors.map((d) => (
@@ -114,7 +116,7 @@ export default function SearchOverlay() {
             {matchingClinics.length > 0 && (
               <div>
                 <p className="mb-2 text-[1.2rem] font-bold uppercase text-[#3665f6]">
-                  Clinics
+                  {t('searchModal.clinics', 'Clinics')}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {matchingClinics.map((c) => (
@@ -134,14 +136,14 @@ export default function SearchOverlay() {
               matchingDoctors.length === 0 &&
               matchingClinics.length === 0 && (
                 <p className="text-[1.4rem] text-[#666666]">
-                  Press Search to view full directory results for &ldquo;{query}&rdquo;.
+                  {t('searchModal.pressSearchHint', 'Press Search to view full directory results for')} &ldquo;{query}&rdquo;.
                 </p>
               )}
           </div>
         ) : (
           <div className="mt-6">
             <p className="mb-2 text-[1.15rem] font-bold uppercase tracking-wider text-[#585858]">
-              MOST SEARCHED FOR
+              {t('searchModal.mostSearched', 'MOST SEARCHED FOR')}
             </p>
             <div className="flex flex-wrap gap-3">
               {MOST_SEARCHED.map((item) => (
@@ -151,7 +153,7 @@ export default function SearchOverlay() {
                   onClick={() => go(item.to)}
                   className="cursor-pointer text-[1.4rem] font-semibold text-[#3665f6] hover:underline"
                 >
-                  {item.label}
+                  {item.labelKey ? t(item.labelKey, item.label) : item.label}
                 </button>
               ))}
             </div>

@@ -1,3 +1,5 @@
+import { PUBLIC_TRANSLATIONS } from './publicTranslations'
+
 export const TRANSLATIONS = {
   en: {
     common: {
@@ -463,30 +465,32 @@ export const TRANSLATIONS = {
   },
 }
 
-export function getTranslation(lang, path, fallback) {
-  const code = lang === 'az' ? 'az' : 'en'
-  const parts = path.split('.')
-  let cur = TRANSLATIONS[code]
+function lookupKey(obj, parts) {
+  let cur = obj
   for (const part of parts) {
     if (cur && typeof cur === 'object' && part in cur) {
       cur = cur[part]
     } else {
-      cur = undefined
-      break
+      return undefined
     }
   }
-  if (cur !== undefined) return cur
+  return cur
+}
 
-  // Fallback to EN
-  let enCur = TRANSLATIONS.en
-  for (const part of parts) {
-    if (enCur && typeof enCur === 'object' && part in enCur) {
-      enCur = enCur[part]
-    } else {
-      enCur = undefined
-      break
-    }
-  }
-  return enCur ?? fallback ?? path
+export function getTranslation(lang, path, fallback) {
+  const code = lang === 'az' ? 'az' : lang === 'ru' ? 'ru' : 'en'
+  const parts = path.split('.')
+
+  const publicHit = lookupKey(PUBLIC_TRANSLATIONS[code], parts)
+  if (publicHit !== undefined) return publicHit
+
+  const mainHit = lookupKey(TRANSLATIONS[code], parts)
+  if (mainHit !== undefined) return mainHit
+
+  const enPublicHit = lookupKey(PUBLIC_TRANSLATIONS.en, parts)
+  if (enPublicHit !== undefined) return enPublicHit
+
+  const enMainHit = lookupKey(TRANSLATIONS.en, parts)
+  return enMainHit ?? fallback ?? path
 }
 

@@ -1,8 +1,8 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { BRAND } from '../../data/brand'
 import { PATIENT_REVIEWS } from '../../data/homeData'
+import { useTranslation } from '../../hooks/useTranslation'
 import {
   StarGoldIcon,
   SwiperArrowIcon,
@@ -11,12 +11,13 @@ import {
 
 export default function ReviewsSection() {
   const swiperRef = useRef(null)
+  const { t } = useTranslation()
 
   return (
     <section className="mt-[120px] md:mt-[180px]">
       <div className="zm-container">
         <h2 className="text-[3.6rem] font-semibold leading-[1.15] text-[#0c3a94] md:text-[5rem]">
-          {BRAND.name} patient reviews
+          {t('home.reviewsTitle')}
         </h2>
 
         <div className="mt-10">
@@ -37,7 +38,7 @@ export default function ReviewsSection() {
                     </h3>
                     <span className="inline-flex items-center gap-1.5 text-[1.3rem] font-semibold text-[#22d698]">
                       <VerifiedBadgeIcon />
-                      <span>Verified patient</span>
+                      <span>{t('services.verifiedPatient', 'Verified patient')}</span>
                     </span>
                   </div>
 

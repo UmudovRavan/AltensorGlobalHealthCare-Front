@@ -26,7 +26,7 @@ export default function Footer() {
                       to={item.to}
                       className="transition-opacity hover:underline hover:opacity-80"
                     >
-                      {item.label}
+                      {item.labelKey ? t(item.labelKey, item.label) : item.label}
                     </Link>
                   </li>
                 ))}
@@ -43,7 +43,7 @@ export default function Footer() {
                       to={item.to}
                       className="transition-opacity hover:underline hover:opacity-80"
                     >
-                      {item.label}
+                      {item.labelKey ? t(item.labelKey, item.label) : item.label}
                     </Link>
                   </li>
                 ))}
@@ -65,11 +65,10 @@ export default function Footer() {
                     {BRAND.coordinator.name}
                   </h3>
                   <p className="mt-1 text-[1.1rem] font-bold uppercase tracking-[0.08em] text-white/90">
-                    {BRAND.coordinator.role}
+                    {t('about.founderRole', BRAND.coordinator.role)}
                   </p>
                   <p className="mt-3 max-w-[360px] text-[1.4rem] leading-relaxed text-white/90">
-                    Here to help you with all your medical needs and any other questions,
-                    call or text.
+                    {t('footerExtra.coordinatorHelp')}
                   </p>
 
                   <a
@@ -85,7 +84,7 @@ export default function Footer() {
                       to="/en/about-us/contact"
                       className="zm-btn zm-btn-green-on-blue zm-btn-sm inline-flex items-center gap-2"
                     >
-                      <span>Contact</span>
+                      <span>{t('nav.contact')}</span>
                       <SwiperArrowIcon className="zm-btn-arrow h-[10px] w-[7px]" />
                     </Link>
                     <a
@@ -100,7 +99,7 @@ export default function Footer() {
                   </div>
 
                   <div className="mt-7">
-                    <p className="mb-3 text-[1.6rem] font-bold">Follow us</p>
+                    <p className="mb-3 text-[1.6rem] font-bold">{t('footerExtra.followUs')}</p>
                     <div className="flex flex-wrap gap-2.5">
                       <a
                         href={BRAND.socials.facebook}
@@ -143,7 +142,7 @@ export default function Footer() {
               <AltensorLogo compact />
             </Link>
             <p className="text-[1.2rem] text-[#555555]">
-              Copyright {CURRENT_YEAR} {BRAND.name} All rights reserved.
+              Copyright {CURRENT_YEAR} {BRAND.name} · {t('footer.rights')}
             </p>
           </div>
           <img

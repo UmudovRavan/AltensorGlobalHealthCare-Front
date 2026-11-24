@@ -1,48 +1,55 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import SectionLoader from '../components/common/SectionLoader'
+import { useTranslation } from '../hooks/useTranslation'
 import { useUI } from '../hooks/useUI'
 import { CLINICS } from '../data/clinics'
 import { DOCTORS } from '../data/doctors'
 import { apiClient, resolveMediaUrl } from '../services/apiClient'
 
 function normalizeClinic(c, idx) {
+  if (!c) return null
   if (c.image && c.specialties && Array.isArray(c.services)) return c
-  const fallback = CLINICS[idx % CLINICS.length] || CLINICS[0]
+  const fallback = CLINICS[idx % CLINICS.length] || CLINICS[0] || null
   const servicesList = Array.isArray(c.services) && c.services.length > 0
     ? c.services.map((s) => (typeof s === 'string' ? s : s?.title || s?.name)).filter(Boolean)
     : Array.isArray(c.specialties) && c.specialties.length > 0
       ? c.specialties
-      : fallback.services || fallback.specialties || ['Medical Care']
+      : fallback?.services || fallback?.specialties || ['Medical Care']
 
   return {
     id: c.id,
     slug: c.slug || c.id,
-    name: c.name || fallback.name,
-    location: c.city ? `${c.city}, Croatia` : fallback.location,
-    address: c.address || (c.city ? `${c.city}, Croatia` : fallback.address),
-    summary: c.shortDescription || c.description || fallback.summary || fallback.description,
-    description: c.description || fallback.description,
-    fullDescription: c.description || fallback.fullDescription || fallback.description,
-    image: resolveMediaUrl(c.coverImageUrl) || resolveMediaUrl(c.logoUrl) || fallback.image,
+    name: c.name || fallback?.name || 'Clinic',
+    location: c.city ? `${c.city}, Azerbaijan` : fallback?.location || 'Baku, Azerbaijan',
+    address: c.address || (c.city ? `${c.city}, Azerbaijan` : fallback?.address || 'Baku, Azerbaijan'),
+    summary: c.shortDescription || c.description || fallback?.summary || fallback?.description || '',
+    description: c.description || fallback?.description || '',
+    fullDescription: c.description || fallback?.fullDescription || fallback?.description || '',
+    image: resolveMediaUrl(c.coverImageUrl) || resolveMediaUrl(c.logoUrl) || fallback?.image || '',
     logoUrl: resolveMediaUrl(c.logoUrl) || '',
     specialties: c.specialties || servicesList,
     services: servicesList,
-    accreditation: c.certificates || fallback.accreditation || 'ISO Certified',
+    accreditation: c.certificates || fallback?.accreditation || 'ISO Certified',
     doctors: Array.isArray(c.doctors) ? c.doctors : null,
   }
 }
 
 export default function ClinicsPage() {
   const { slug } = useParams()
-  const { openInquiry } = useUI()
+  const { openInquiry, language } = useUI()
+  const { t } = useTranslation()
   const [clinicsList, setClinicsList] = useState(CLINICS)
   const [doctorsList, setDoctorsList] = useState(DOCTORS)
   const [clinicDetail, setClinicDetail] = useState(null)
   const [nameFilter, setNameFilter] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let ignore = false
-    apiClient
+    setLoading(true)
+
+    const clinicsReq = apiClient
       .get('/public/clinics')
       .then((res) => {
         if (ignore || !Array.isArray(res?.data) || res.data.length === 0) return
@@ -52,19 +59,23 @@ export default function ClinicsPage() {
         // Keep static CLINICS fallback
       })
 
-    if (slug) {
-      apiClient
-        .get(`/public/clinics/${slug}`)
-        .then((res) => {
-          if (ignore || !res?.data) return
-          setClinicDetail(normalizeClinic(res.data, 0))
+    const detailReq = slug
+      ? apiClient
+          .get(`/public/clinics/${slug}`)
+          .then((res) => {
+            if (ignore || !res?.data) return
+            setClinicDetail(normalizeClinic(res.data, 0))
+          })
+          .catch(() => {
+            setClinicDetail(null)
+          })
+      : Promise.resolve().then(() => {
+          if (!ignore) setClinicDetail(null)
         })
-        .catch(() => {
-          setClinicDetail(null)
-        })
-    } else {
-      setClinicDetail(null)
-    }
+
+    Promise.all([clinicsReq, detailReq]).finally(() => {
+      if (!ignore) setLoading(false)
+    })
 
     apiClient
       .get('/public/doctors')
@@ -88,7 +99,7 @@ export default function ClinicsPage() {
     return () => {
       ignore = true
     }
-  }, [slug])
+  }, [slug, language])
 
   if (slug) {
     const matched =
@@ -96,6 +107,14 @@ export default function ClinicsPage() {
       clinicsList.find((c) => c.slug === slug || c.id === slug) ||
       clinicsList[0]
     const clinic = normalizeClinic(matched || CLINICS[0], 0)
+    if (!clinic) {
+      if (loading) return <SectionLoader fullPage />
+      return (
+        <div className="zm-container py-20 text-center text-[1.6rem] text-[#666666]">
+          {t('home.clinicsEmpty', 'No clinics added yet.')}
+        </div>
+      )
+    }
     const detailDoctors = Array.isArray(clinic.doctors)
       ? clinic.doctors.map((d, idx) => ({
           slug: d.id,
@@ -182,11 +201,15 @@ export default function ClinicsPage() {
                   to={`/en/doctors/${doc.slug}`}
                   className="flex flex-col rounded-[12px] border border-[#3665f6] bg-white p-5 hover:shadow-md"
                 >
-                  <img
-                    src={doc.image}
-                    alt={doc.name}
-                    className="h-[190px] w-full rounded-[8px] object-cover object-top"
-                  />
+                  <div className="aspect-[9/16] w-full overflow-hidden rounded-[8px] bg-[#f4f7fc]">
+                    {doc.image && (
+                      <img
+                        src={doc.image}
+                        alt={doc.name}
+                        className="h-full w-full object-contain"
+                      />
+                    )}
+                  </div>
                   <p className="mt-4 text-[1.15rem] font-bold uppercase text-[#3665f6]">
                     {doc.specialty}
                   </p>
@@ -211,15 +234,15 @@ export default function ClinicsPage() {
   return (
     <div className="zm-container py-16">
       <nav className="mb-6 text-[1.3rem] text-[#666666]">
-        <Link to="/en" className="text-[#3665f6] hover:underline">Home</Link> /{' '}
-        <span>Clinics</span>
+        <Link to="/en" className="text-[#3665f6] hover:underline">{t('about.home')}</Link> /{' '}
+        <span>{t('nav.clinics')}</span>
       </nav>
 
       <h1 className="text-[4.8rem] font-semibold leading-[1] text-[#0c3a94] md:text-[8.2rem]">
-        Clinics
+        {t('nav.clinics')}
       </h1>
       <p className="mt-3 text-[2rem] font-medium text-[#0c3a94] md:text-[2.6rem]">
-        Explore leading medical providers in Zagreb
+        {t('home.clinicsSubtitle')}
       </p>
 
       <div className="mt-10 max-w-[420px]">
@@ -240,37 +263,41 @@ export default function ClinicsPage() {
         />
       </div>
 
-      <div className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3">
-        {filtered.map((clinic) => (
-          <div key={clinic.slug} className="flex flex-col items-start">
-            <Link
-              to={`/en/clinics/${clinic.slug}`}
-              className="block h-[256px] w-full overflow-hidden rounded-[8px]"
-            >
-              <img
-                src={clinic.image}
-                alt={clinic.name}
-                className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
-              />
-            </Link>
-            <Link
-              to={`/en/clinics/${clinic.slug}`}
-              className="mt-5 text-[3.4rem] font-bold text-[#0a295b] hover:text-[#3665f6]"
-            >
-              {clinic.name}
-            </Link>
-            <p className="mt-3 text-[1.5rem] leading-[1.6] text-[#555555]">
-              {clinic.summary}
-            </p>
-            <Link
-              to={`/en/clinics/${clinic.slug}`}
-              className="zm-btn zm-btn-green zm-btn-sm mt-5"
-            >
-              <span>View profile</span>
-            </Link>
-          </div>
-        ))}
-      </div>
+      {loading && clinicsList.length === 0 ? (
+        <SectionLoader />
+      ) : (
+        <div className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3">
+          {filtered.map((clinic) => (
+            <div key={clinic.slug} className="flex flex-col items-start">
+              <Link
+                to={`/en/clinics/${clinic.slug}`}
+                className="block h-[256px] w-full overflow-hidden rounded-[8px]"
+              >
+                <img
+                  src={clinic.image}
+                  alt={clinic.name}
+                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
+                />
+              </Link>
+              <Link
+                to={`/en/clinics/${clinic.slug}`}
+                className="mt-5 text-[3.4rem] font-bold text-[#0a295b] hover:text-[#3665f6]"
+              >
+                {clinic.name}
+              </Link>
+              <p className="mt-3 text-[1.5rem] leading-[1.6] text-[#555555]">
+                {clinic.summary}
+              </p>
+              <Link
+                to={`/en/clinics/${clinic.slug}`}
+                className="zm-btn zm-btn-green zm-btn-sm mt-5"
+              >
+                <span>{t('services.viewProfile')}</span>
+              </Link>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

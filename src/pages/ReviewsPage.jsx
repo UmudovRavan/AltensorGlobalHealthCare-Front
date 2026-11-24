@@ -1,21 +1,22 @@
 import { Link } from 'react-router-dom'
 import { StarGoldIcon, VerifiedBadgeIcon } from '../components/common/ZagrebIcons'
-import { BRAND } from '../data/brand'
 import { PATIENT_REVIEWS } from '../data/homeData'
+import { useTranslation } from '../hooks/useTranslation'
 
 export default function ReviewsPage() {
+  const { t } = useTranslation()
   return (
     <div className="zm-container py-16">
       <nav className="mb-6 text-[1.3rem] text-[#666666]">
-        <Link to="/en" className="text-[#3665f6] hover:underline">Home</Link> /{' '}
-        <span>Patient Reviews</span>
+        <Link to="/en" className="text-[#3665f6] hover:underline">{t('about.home')}</Link> /{' '}
+        <span>{t('nav.patientReviews')}</span>
       </nav>
 
       <h1 className="text-[4.4rem] font-semibold leading-[1.1] text-[#0c3a94] md:text-[7rem]">
-        {BRAND.name} patient reviews
+        {t('home.reviewsTitle')}
       </h1>
       <p className="mt-3 text-[1.8rem] text-[#555555]">
-        Verified stories and feedback from international and local patients.
+        {t('home.reviewsSubtitle')}
       </p>
 
       <div className="mt-12 space-y-8">
@@ -30,7 +31,7 @@ export default function ReviewsPage() {
               </h2>
               <span className="inline-flex items-center gap-1.5 text-[1.3rem] font-semibold text-[#22d698]">
                 <VerifiedBadgeIcon />
-                <span>Verified patient</span>
+                <span>{t('services.verifiedPatient')}</span>
               </span>
             </div>
 

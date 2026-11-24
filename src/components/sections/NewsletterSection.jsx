@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useTranslation } from '../../hooks/useTranslation'
 import { NewsletterIcon } from '../common/ZagrebIcons'
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const { t } = useTranslation()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -21,15 +23,15 @@ export default function NewsletterSection() {
           </div>
 
           <h2 className="mt-5 text-[4.8rem] font-semibold leading-[1.05] text-[#3665f6] md:text-[8.2rem]">
-            Newsletter
+            {t('widgets.newsletterTitle', 'Newsletter')}
           </h2>
           <p className="mt-3 text-[1.8rem] font-bold text-[#0a295b]">
-            I wish to receive marketing information
+            {t('widgets.newsletterSub')}
           </p>
 
           {subscribed ? (
             <div className="mt-8 rounded-[8px] bg-white p-5 text-[1.6rem] font-semibold text-[#6bbe47] shadow-sm">
-              Thank you for subscribing to Altensor Healthcare updates!
+              {t('widgets.subscribedMsg')}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -43,11 +45,11 @@ export default function NewsletterSection() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Please type your email address"
+                placeholder={t('widgets.newsletterPlaceholder')}
                 className="w-full rounded-[8px] border border-[#c7c7c7] bg-white px-5 py-4 text-center text-[1.6rem] text-[#0a295b] outline-none focus:border-[#3665f6]"
               />
               <button type="submit" className="zm-btn zm-btn-green">
-                <span>Subscribe</span>
+                <span>{t('widgets.subscribe', 'Subscribe')}</span>
               </button>
             </form>
           )}

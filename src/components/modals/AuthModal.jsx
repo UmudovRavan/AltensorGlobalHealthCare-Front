@@ -216,7 +216,7 @@ export default function AuthModal() {
 
   return (
     <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
-      <div className="relative w-full max-w-[430px] rounded-[10px] bg-white p-[36px] shadow-[0_15px_40px_rgba(0,0,0,0.2)]">
+      <div className="relative w-full max-w-[430px] rounded-[10px] bg-white p-6 shadow-[0_15px_40px_rgba(0,0,0,0.2)] sm:p-[36px]">
         {/* Close Button */}
         <button
           type="button"

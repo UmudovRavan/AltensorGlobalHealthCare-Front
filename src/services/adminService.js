@@ -208,8 +208,18 @@ const adminService = {
     return res?.data || []
   },
 
+  async getAdminCategories() {
+    const res = await apiClient.get('/admin/categories')
+    return res?.data || []
+  },
+
   async createCategory(data) {
     const res = await apiClient.post('/admin/categories', data)
+    return res?.data
+  },
+
+  async updateCategory(id, data) {
+    const res = await apiClient.put(`/admin/categories/${id}`, data)
     return res?.data
   },
 
@@ -217,13 +227,170 @@ const adminService = {
     return apiClient.delete(`/admin/categories/${id}`)
   },
 
+  async getAdminServices(params) {
+    const res = await apiClient.get('/admin/services', params)
+    return res?.data || []
+  },
+
+  async getAdminServiceById(id) {
+    const res = await apiClient.get(`/admin/services/${id}`)
+    return res?.data
+  },
+
   async createService(data) {
     const res = await apiClient.post('/admin/services', data)
     return res?.data
   },
 
+  async updateService(id, data) {
+    const res = await apiClient.put(`/admin/services/${id}`, data)
+    return res?.data
+  },
+
   async deleteService(id) {
     return apiClient.delete(`/admin/services/${id}`)
+  },
+
+  async uploadServiceHeroImage(id, file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await apiClient.upload(`/admin/services/${id}/hero-image`, formData)
+    return res?.data
+  },
+
+  async uploadServicePromoBanner(id, file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await apiClient.upload(`/admin/services/${id}/promo-banner`, formData)
+    return res?.data
+  },
+
+  async setClinicPrice(data) {
+    const res = await apiClient.post('/admin/services/price', data)
+    return res?.data
+  },
+
+  async deleteClinicPrice(serviceId, clinicId) {
+    return apiClient.delete(`/admin/services/${serviceId}/clinics/${clinicId}`)
+  },
+
+  async assignServiceDoctors(serviceId, doctorIds) {
+    const res = await apiClient.put(`/admin/services/${serviceId}/doctors`, { doctorIds })
+    return res?.data
+  },
+
+  // Procedure & General FAQs
+  async getAdminFaqs(medicalServiceId) {
+    const res = await apiClient.get('/admin/faq', medicalServiceId ? { medicalServiceId } : undefined)
+    return res?.data || []
+  },
+
+  async createFaq(data) {
+    const res = await apiClient.post('/admin/faq', data)
+    return res?.data
+  },
+
+  async updateFaq(id, data) {
+    const res = await apiClient.put(`/admin/faq/${id}`, data)
+    return res?.data
+  },
+
+  async deleteFaq(id) {
+    return apiClient.delete(`/admin/faq/${id}`)
+  },
+
+  // About Us & CMS
+  async getAdminPages() {
+    const res = await apiClient.get('/admin/pages')
+    return res?.data || []
+  },
+
+  async getAdminPageBySlug(slug) {
+    const res = await apiClient.get(`/admin/pages/${encodeURIComponent(slug)}`)
+    return res?.data
+  },
+
+  async upsertPage(data) {
+    const res = await apiClient.post('/admin/pages', data)
+    return res?.data
+  },
+
+  async deletePage(slug) {
+    return apiClient.delete(`/admin/pages/${encodeURIComponent(slug)}`)
+  },
+
+  async getPillars() {
+    const res = await apiClient.get('/admin/pillars')
+    return res?.data || []
+  },
+
+  async createPillar(data) {
+    const res = await apiClient.post('/admin/pillars', data)
+    return res?.data
+  },
+
+  async updatePillar(id, data) {
+    const res = await apiClient.put(`/admin/pillars/${id}`, data)
+    return res?.data
+  },
+
+  async deletePillar(id) {
+    return apiClient.delete(`/admin/pillars/${id}`)
+  },
+
+  async getTeamMembers() {
+    const res = await apiClient.get('/admin/team')
+    return res?.data || []
+  },
+
+  async createTeamMember(data) {
+    const res = await apiClient.post('/admin/team', data)
+    return res?.data
+  },
+
+  async updateTeamMember(id, data) {
+    const res = await apiClient.put(`/admin/team/${id}`, data)
+    return res?.data
+  },
+
+  async deleteTeamMember(id) {
+    return apiClient.delete(`/admin/team/${id}`)
+  },
+
+  async uploadTeamPhoto(id, file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await apiClient.upload(`/admin/team/${id}/photo`, formData)
+    return res?.data
+  },
+
+  async getHowItWorksSteps() {
+    const res = await apiClient.get('/admin/how-it-works')
+    return res?.data || []
+  },
+
+  async createStep(data) {
+    const res = await apiClient.post('/admin/how-it-works', data)
+    return res?.data
+  },
+
+  async updateStep(id, data) {
+    const res = await apiClient.put(`/admin/how-it-works/${id}`, data)
+    return res?.data
+  },
+
+  async deleteStep(id) {
+    return apiClient.delete(`/admin/how-it-works/${id}`)
+  },
+
+  async getContactMessages(params) {
+    const res = await apiClient.get('/admin/contact-messages', params)
+    return res?.data || []
+  },
+
+  async markContactHandled(id) {
+    const res = await apiClient.patch(`/admin/contact-messages/${id}/handled`, {})
+    return res?.data
   },
 
   // Packages

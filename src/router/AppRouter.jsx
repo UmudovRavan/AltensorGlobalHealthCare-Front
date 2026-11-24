@@ -17,6 +17,7 @@ import {
 } from '../pages/InfoPage'
 import ReviewsPage from '../pages/ReviewsPage'
 import ServicesPage from '../pages/ServicesPage'
+import TreatmentPlanPage from '../pages/TreatmentPlanPage'
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage'
 
 export default function AppRouter() {
@@ -27,6 +28,10 @@ export default function AppRouter() {
         {/* Admin Portal (Role-protected: AdminLoginPage -> AdminDashboardPage) */}
         <Route path="/admin" element={<AdminDashboardPage />} />
         <Route path="/admin/*" element={<AdminDashboardPage />} />
+
+        {/* Guest 9-Step Treatment Planner */}
+        <Route path="/plan" element={<TreatmentPlanPage />} />
+        <Route path="/en/plan" element={<TreatmentPlanPage />} />
 
         <Route element={<MainLayout />}>
           <Route path="/" element={<Navigate to="/en" replace />} />
@@ -49,6 +54,7 @@ export default function AppRouter() {
           {/* Services */}
           <Route path="/en/services" element={<ServicesPage />} />
           <Route path="/en/services/:category" element={<ServicesPage />} />
+          <Route path="/en/services/:category/:sub" element={<ServicesPage />} />
           <Route
             path="/en/services/:category/:sub/:procedure"
             element={<ServicesPage />}

@@ -185,10 +185,12 @@ export const PLAN_STEPS = [
 export const MOST_SEARCHED = [
   {
     label: 'Digital Aligner Treatment Planning',
+    labelKey: 'searchModal.mostSearched1',
     to: '/en/services/orthodontics/clear-aligners/digital-aligner-treatment-planning',
   },
   {
     label: 'Laparoscopic umbilical hernia repair',
+    labelKey: 'searchModal.mostSearched2',
     to: '/en/services/abdominal-surgery/laparoscopy/laparoscopic-umbilical-hernia-repair',
   },
 ]

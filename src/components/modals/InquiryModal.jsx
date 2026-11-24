@@ -3,11 +3,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SERVICE_CATEGORIES } from '../../data/services'
 import { useAuth } from '../../hooks/useAuth'
+import { useTranslation } from '../../hooks/useTranslation'
 import { useUI } from '../../hooks/useUI'
 import { apiClient } from '../../services/apiClient'
 import patientService from '../../services/patientService'
-
-const STEPS = ['SEND INQUIRY', 'RECEIVE OFFER', 'PLAN TRIP', 'TREATMENT']
 
 function formatDisplayDate(isoDate) {
   if (!isoDate) return ''
@@ -18,6 +17,13 @@ function formatDisplayDate(isoDate) {
 
 function InquiryModalBody({ inquirySubject, closeInquiry }) {
   const { user, isAuthenticated } = useAuth()
+  const { t } = useTranslation()
+  const steps = [
+    t('inquiryModal.stepSend', 'SEND INQUIRY'),
+    t('inquiryModal.stepOffer', 'RECEIVE OFFER'),
+    t('inquiryModal.stepPlan', 'PLAN TRIP'),
+    t('inquiryModal.stepTreatment', 'TREATMENT'),
+  ]
 
   const [categories, setCategories] = useState(() =>
     SERVICE_CATEGORIES.map((cat) => ({
@@ -53,7 +59,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
   const [transfer, setTransfer] = useState(false)
   const [files, setFiles] = useState([])
   const [message, setMessage] = useState(() =>
-    inquirySubject ? `Interested in: ${inquirySubject}` : ''
+    inquirySubject ? `${t('inquiryModal.interestedInPrefix', 'Interested in:')} ${inquirySubject}` : ''
   )
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [acceptMarketing, setAcceptMarketing] = useState(false)
@@ -183,7 +189,12 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
     setErrorMsg('')
 
     if (!acceptTerms) {
-      setErrorMsg('Please accept the Terms and conditions and the Privacy Policy.')
+      setErrorMsg(
+        t(
+          'inquiryModal.errAcceptTerms',
+          'Please accept the Terms and conditions and the Privacy Policy.'
+        )
+      )
       return
     }
 
@@ -232,7 +243,8 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
     handleAnimatedClose()
   }
 
-  const displayName = user?.firstName || user?.fullName || 'Patient'
+  const displayName =
+    user?.firstName || user?.fullName || t('inquiryModal.patientFallback', 'Patient')
 
   return (
     <div
@@ -253,7 +265,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
         <button
           type="button"
           onClick={handleAnimatedClose}
-          aria-label="Close modal"
+          aria-label={t('inquiryModal.closeAria', 'Close modal')}
           className="absolute right-6 top-6 z-20 cursor-pointer rounded-full p-2 text-[#0a295b] transition-colors hover:bg-slate-100 hover:text-[#3665f6]"
         >
           <X className="h-7 w-7" strokeWidth={1.75} />
@@ -264,16 +276,16 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
           <div className="flex-1 overflow-y-auto px-7 pt-10 pb-10 sm:px-14">
             {/* Title & Breadcrumb Stepper */}
             <h2 className="pr-10 text-[3.2rem] font-bold tracking-tight text-[#0c3a94] sm:text-[4.2rem]">
-              Let&apos;s plan your medical trip
+              {t('inquiryModal.title', "Let's plan your medical trip")}
             </h2>
 
             <div className="mt-2 flex flex-wrap items-center gap-2.5 text-[1.2rem] font-semibold tracking-wider uppercase">
-              {STEPS.map((step, idx) => (
+              {steps.map((step, idx) => (
                 <div key={step} className="flex items-center gap-2.5">
                   <span className={idx === 0 ? 'font-bold text-[#3665f6]' : 'text-[#707070]'}>
                     {step}
                   </span>
-                  {idx < STEPS.length - 1 && (
+                  {idx < steps.length - 1 && (
                     <span className="text-[#9ca3af]">&rsaquo;</span>
                   )}
                 </div>
@@ -282,7 +294,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
 
             {inquirySubject && (
               <div className="mt-5 inline-flex items-center gap-2 rounded-[8px] bg-[#f0f4ff] px-3.5 py-2 text-[1.3rem] font-semibold text-[#0c3a94]">
-                <span>Selected:</span>
+                <span>{t('inquiryModal.selected', 'Selected:')}</span>
                 <span className="text-[#3665f6]">{inquirySubject}</span>
               </div>
             )}
@@ -293,14 +305,14 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                 <div className="flex items-center gap-5">
                   <span className="w-6 text-[2.2rem] font-bold text-[#3665f6]">1</span>
                   <h3 className="text-[2.2rem] font-bold text-[#3665f6]">
-                    Your personal information
+                    {t('inquiryModal.s1Title', 'Your personal information')}
                   </h3>
                 </div>
 
                 <div className="mt-3 pl-11">
                   {isAuthenticated ? (
                     <p className="text-[1.45rem] text-[#555555]">
-                      Logged in as{' '}
+                      {t('inquiryModal.loggedInAs', 'Logged in as')}{' '}
                       <Link
                         to="/en/my-profile"
                         onClick={closeInquiry}
@@ -313,33 +325,33 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
                         <label className="mb-1.5 block text-[1.3rem] font-bold text-[#0a295b]">
-                          Name *
+                          {t('inquiryModal.nameLabel', 'Name *')}
                         </label>
                         <input
                           type="text"
                           required
                           value={firstName}
                           onChange={(e) => setFirstName(e.target.value)}
-                          placeholder="First name"
+                          placeholder={t('inquiryModal.namePlaceholder', 'First name')}
                           className="w-full rounded-[8px] border border-[#d1d5db] px-4 py-2.5 text-[1.4rem] text-[#0a295b] outline-none focus:border-[#3665f6]"
                         />
                       </div>
                       <div>
                         <label className="mb-1.5 block text-[1.3rem] font-bold text-[#0a295b]">
-                          Surname *
+                          {t('inquiryModal.surnameLabel', 'Surname *')}
                         </label>
                         <input
                           type="text"
                           required
                           value={lastName}
                           onChange={(e) => setLastName(e.target.value)}
-                          placeholder="Last name"
+                          placeholder={t('inquiryModal.surnamePlaceholder', 'Last name')}
                           className="w-full rounded-[8px] border border-[#d1d5db] px-4 py-2.5 text-[1.4rem] text-[#0a295b] outline-none focus:border-[#3665f6]"
                         />
                       </div>
                       <div>
                         <label className="mb-1.5 block text-[1.3rem] font-bold text-[#0a295b]">
-                          E-mail *
+                          {t('inquiryModal.emailLabel', 'E-mail *')}
                         </label>
                         <input
                           type="email"
@@ -352,7 +364,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                       </div>
                       <div>
                         <label className="mb-1.5 block text-[1.3rem] font-bold text-[#0a295b]">
-                          Phone
+                          {t('inquiryModal.phoneLabel', 'Phone')}
                         </label>
                         <input
                           type="tel"
@@ -372,7 +384,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                 <div className="flex items-center gap-5">
                   <span className="w-6 text-[2.2rem] font-bold text-[#3665f6]">2</span>
                   <h3 className="text-[2.2rem] font-bold text-[#3665f6]">
-                    Procedure information
+                    {t('inquiryModal.s2Title', 'Procedure information')}
                   </h3>
                 </div>
 
@@ -381,7 +393,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                   <div className="space-y-5">
                     <div ref={catRef} className="relative">
                       <label className="mb-2 block text-[1.3rem] font-bold text-[#0a295b]">
-                        Category
+                        {t('inquiryModal.categoryLabel', 'Category')}
                       </label>
                       <button
                         type="button"
@@ -393,8 +405,8 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                       >
                         <span className="truncate">
                           {selectedCategory === 'all'
-                            ? 'All'
-                            : activeCategoryObj?.name || 'All'}
+                            ? t('inquiryModal.all', 'All')
+                            : activeCategoryObj?.name || t('inquiryModal.all', 'All')}
                         </span>
                         <ChevronDown
                           className={`h-5 w-5 shrink-0 text-[#3665f6] transition-transform ${
@@ -410,7 +422,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                               type="text"
                               value={catSearch}
                               onChange={(e) => setCatSearch(e.target.value)}
-                              placeholder="Search"
+                              placeholder={t('inquiryModal.searchPlaceholder', 'Search')}
                               autoFocus
                               className="w-full rounded-[6px] border border-[#d1d5db] px-3 py-2 text-[1.4rem] text-[#0a295b] outline-none focus:border-[#3665f6]"
                             />
@@ -430,7 +442,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                                   : 'text-[#0a295b] hover:bg-[#f0f4ff]'
                               }`}
                             >
-                              All
+                              {t('inquiryModal.all', 'All')}
                             </button>
                             {filteredCategories.map((cat) => {
                               const isSelected =
@@ -464,7 +476,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                     {selectedCategory !== 'all' && availableProcedures.length > 0 && (
                       <div ref={procRef} className="relative">
                         <label className="mb-2 block text-[1.3rem] font-bold text-[#0a295b]">
-                          Procedure
+                          {t('inquiryModal.procedureLabel', 'Procedure')}
                         </label>
                         <button
                           type="button"
@@ -475,7 +487,8 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                           className="flex w-full cursor-pointer items-center justify-between rounded-[8px] border border-[#d1d5db] bg-white px-4 py-3 text-left text-[1.5rem] font-semibold text-[#0a295b] transition-colors hover:border-[#3665f6]"
                         >
                           <span className="truncate">
-                            {selectedProcedureObj?.title || 'Select procedure'}
+                            {selectedProcedureObj?.title ||
+                              t('inquiryModal.selectProcedure', 'Select procedure')}
                           </span>
                           <ChevronDown
                             className={`h-5 w-5 shrink-0 text-[#3665f6] transition-transform ${
@@ -491,7 +504,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                                 type="text"
                                 value={procSearch}
                                 onChange={(e) => setProcSearch(e.target.value)}
-                                placeholder="Search"
+                                placeholder={t('inquiryModal.searchPlaceholder', 'Search')}
                                 autoFocus
                                 className="w-full rounded-[6px] border border-[#d1d5db] px-3 py-2 text-[1.4rem] text-[#0a295b] outline-none focus:border-[#3665f6]"
                               />
@@ -529,7 +542,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                   {/* Timeframe Picker */}
                   <div ref={timeframeRef} className="relative">
                     <label className="mb-2 block text-[1.3rem] font-bold text-[#0a295b]">
-                      Timeframe
+                      {t('inquiryModal.timeframeLabel', 'Timeframe')}
                     </label>
                     <button
                       type="button"
@@ -538,7 +551,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                         timeframeDisplay ? 'font-medium text-[#0a295b]' : 'text-[#9ca3af]'
                       }`}
                     >
-                      {timeframeDisplay || 'Please select'}
+                      {timeframeDisplay || t('inquiryModal.pleaseSelect', 'Please select')}
                     </button>
 
                     {timeframeOpen && (
@@ -546,7 +559,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                         <div className="space-y-3">
                           <div>
                             <label className="mb-1 block text-[1.2rem] font-bold text-[#707070]">
-                              From date
+                              {t('inquiryModal.fromDate', 'From date')}
                             </label>
                             <input
                               type="date"
@@ -557,7 +570,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                           </div>
                           <div>
                             <label className="mb-1 block text-[1.2rem] font-bold text-[#707070]">
-                              To date (optional)
+                              {t('inquiryModal.toDate', 'To date (optional)')}
                             </label>
                             <input
                               type="date"
@@ -576,14 +589,14 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                               }}
                               className="cursor-pointer text-[1.3rem] font-semibold text-[#707070] hover:text-[#0a295b]"
                             >
-                              Clear
+                              {t('inquiryModal.clear', 'Clear')}
                             </button>
                             <button
                               type="button"
                               onClick={() => setTimeframeOpen(false)}
                               className="cursor-pointer rounded-[6px] bg-[#3665f6] px-4 py-1.5 text-[1.3rem] font-semibold text-white"
                             >
-                              Apply
+                              {t('inquiryModal.apply', 'Apply')}
                             </button>
                           </div>
                         </div>
@@ -598,7 +611,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                 <div className="flex items-center gap-5">
                   <span className="w-6 text-[2.2rem] font-bold text-[#3665f6]">3</span>
                   <h3 className="text-[2.2rem] font-bold text-[#3665f6]">
-                    Additional services
+                    {t('inquiryModal.s3Title', 'Additional services')}
                   </h3>
                 </div>
 
@@ -606,7 +619,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                   {/* Airplane ticket */}
                   <div>
                     <p className="mb-2.5 text-[1.3rem] font-bold text-[#0a295b]">
-                      Airplane ticket
+                      {t('inquiryModal.airplaneTicket', 'Airplane ticket')}
                     </p>
                     <div className="flex items-center gap-5 text-[1.4rem] font-bold uppercase">
                       <button
@@ -616,7 +629,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                           !flight ? 'text-[#3665f6]' : 'text-[#0a295b] hover:text-[#3665f6]'
                         }`}
                       >
-                        NO
+                        {t('inquiryModal.no', 'NO')}
                       </button>
                       <button
                         type="button"
@@ -625,7 +638,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                           flight ? 'text-[#3665f6]' : 'text-[#0a295b] hover:text-[#3665f6]'
                         }`}
                       >
-                        YES
+                        {t('inquiryModal.yes', 'YES')}
                       </button>
                     </div>
                   </div>
@@ -633,21 +646,25 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                   {/* Accommodation */}
                   <div>
                     <p className="mb-2.5 text-[1.3rem] font-bold text-[#0a295b]">
-                      Accommodation
+                      {t('inquiryModal.accommodation', 'Accommodation')}
                     </p>
                     <div className="flex flex-wrap items-center gap-4 text-[1.4rem] font-bold uppercase">
-                      {['NONE', 'HOTEL', 'APARTMENT'].map((opt) => (
+                      {[
+                        { key: 'NONE', label: t('inquiryModal.none', 'NONE') },
+                        { key: 'HOTEL', label: t('inquiryModal.hotel', 'HOTEL') },
+                        { key: 'APARTMENT', label: t('inquiryModal.apartment', 'APARTMENT') },
+                      ].map((opt) => (
                         <button
-                          key={opt}
+                          key={opt.key}
                           type="button"
-                          onClick={() => setAccommodation(opt)}
+                          onClick={() => setAccommodation(opt.key)}
                           className={`cursor-pointer transition-colors ${
-                            accommodation === opt
+                            accommodation === opt.key
                               ? 'text-[#3665f6]'
                               : 'text-[#0a295b] hover:text-[#3665f6]'
                           }`}
                         >
-                          {opt}
+                          {opt.label}
                         </button>
                       ))}
                     </div>
@@ -656,7 +673,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                   {/* Airport Transfer */}
                   <div>
                     <p className="mb-2.5 text-[1.3rem] font-bold text-[#0a295b]">
-                      Airport Transfer
+                      {t('inquiryModal.airportTransfer', 'Airport Transfer')}
                     </p>
                     <div className="flex items-center gap-5 text-[1.4rem] font-bold uppercase">
                       <button
@@ -666,7 +683,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                           !transfer ? 'text-[#3665f6]' : 'text-[#0a295b] hover:text-[#3665f6]'
                         }`}
                       >
-                        NO
+                        {t('inquiryModal.no', 'NO')}
                       </button>
                       <button
                         type="button"
@@ -675,7 +692,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                           transfer ? 'text-[#3665f6]' : 'text-[#0a295b] hover:text-[#3665f6]'
                         }`}
                       >
-                        YES
+                        {t('inquiryModal.yes', 'YES')}
                       </button>
                     </div>
                   </div>
@@ -687,13 +704,13 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                 <div className="flex items-center gap-5">
                   <span className="w-6 text-[2.2rem] font-bold text-[#3665f6]">4</span>
                   <h3 className="text-[2.2rem] font-bold text-[#3665f6]">
-                    Medical documentation
+                    {t('inquiryModal.s4Title', 'Medical documentation')}
                   </h3>
                 </div>
 
                 <div className="mt-3 pl-11">
                   <p className="text-[1.45rem] text-[#555555]">
-                    Please attach your existing medical documentation
+                    {t('inquiryModal.attachHint', 'Please attach your existing medical documentation')}
                   </p>
 
                   <input
@@ -710,7 +727,7 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                     onClick={() => fileInputRef.current?.click()}
                     className="zm-btn zm-btn-green mt-4 rounded-[8px] !px-6 !py-2.5 !text-[1.4rem] font-semibold"
                   >
-                    <span>Add new file</span>
+                    <span>{t('inquiryModal.addNewFile', 'Add new file')}</span>
                   </button>
 
                   {files.length > 0 && (
@@ -742,7 +759,9 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
               <div>
                 <div className="flex items-center gap-5">
                   <span className="w-6 text-[2.2rem] font-bold text-[#3665f6]">5</span>
-                  <h3 className="text-[2.2rem] font-bold text-[#3665f6]">Message</h3>
+                  <h3 className="text-[2.2rem] font-bold text-[#3665f6]">
+                    {t('inquiryModal.s5Title', 'Message')}
+                  </h3>
                 </div>
 
                 <div className="mt-4 pl-11">
@@ -750,7 +769,10 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                     rows={6}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Write your message or describe your symptoms..."
+                    placeholder={t(
+                      'inquiryModal.messagePlaceholder',
+                      'Write your message or describe your symptoms...'
+                    )}
                     className="w-full rounded-[8px] border border-[#d1d5db] p-4 text-[1.5rem] text-[#0a295b] outline-none transition-colors focus:border-[#3665f6]"
                   />
 
@@ -762,7 +784,12 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                         onChange={(e) => setAcceptTerms(e.target.checked)}
                         className="h-5 w-5 cursor-pointer rounded-[4px] border border-[#9ca3af] accent-[#3665f6]"
                       />
-                      <span>I accept the Terms and conditions and the Privacy Policy</span>
+                      <span>
+                        {t(
+                          'inquiryModal.acceptTerms',
+                          'I accept the Terms and conditions and the Privacy Policy'
+                        )}
+                      </span>
                     </label>
 
                     <label className="flex cursor-pointer items-center gap-3 text-[1.4rem] font-semibold text-[#0a295b]">
@@ -772,7 +799,9 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                         onChange={(e) => setAcceptMarketing(e.target.checked)}
                         className="h-5 w-5 cursor-pointer rounded-[4px] border border-[#9ca3af] accent-[#3665f6]"
                       />
-                      <span>I wish to receive marketing information</span>
+                      <span>
+                        {t('inquiryModal.acceptMarketing', 'I wish to receive marketing information')}
+                      </span>
                     </label>
                   </div>
 
@@ -794,7 +823,11 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
                 disabled={submitting}
                 className="zm-btn zm-btn-green rounded-[8px] !px-10 !py-3.5 !text-[1.5rem] font-semibold disabled:opacity-60"
               >
-                <span>{submitting ? 'Sending...' : 'Send inquiry'}</span>
+                <span>
+                  {submitting
+                    ? t('inquiryModal.sending', 'Sending...')
+                    : t('inquiryModal.sendInquiry', 'Send inquiry')}
+                </span>
               </button>
             </div>
           </div>
@@ -806,17 +839,20 @@ function InquiryModalBody({ inquirySubject, closeInquiry }) {
             <div className="w-full max-w-[460px] rounded-[12px] bg-white px-8 py-10 text-center shadow-2xl">
               <User className="mx-auto h-10 w-10 text-[#3665f6]" strokeWidth={1.75} />
               <h3 className="mt-4 text-[2.8rem] font-bold leading-tight text-[#3665f6]">
-                Thank you for your inquiry!
+                {t('inquiryModal.thankYouTitle', 'Thank you for your inquiry!')}
               </h3>
               <p className="mt-3 text-[1.45rem] leading-relaxed text-[#555555]">
-                We will get back to you in shortest time frame possible. You can track the status of your each inquiry within your profile.
+                {t(
+                  'inquiryModal.thankYouDesc',
+                  'We will get back to you in shortest time frame possible. You can track the status of your each inquiry within your profile.'
+                )}
               </p>
               <button
                 type="button"
                 onClick={handleDone}
                 className="mt-7 inline-flex min-w-[130px] cursor-pointer items-center justify-center rounded-[8px] bg-[#3665f6] px-8 py-3 text-[1.45rem] font-semibold text-white transition-opacity hover:opacity-90"
               >
-                Done
+                {t('inquiryModal.done', 'Done')}
               </button>
             </div>
           </div>

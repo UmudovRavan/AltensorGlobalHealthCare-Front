@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from '../hooks/useTranslation'
 import patientService from '../services/patientService'
 
 export default function InquiriesPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const [inquiries, setInquiries] = useState([])
   const [loading, setLoading] = useState(true)
@@ -29,29 +31,29 @@ export default function InquiriesPage() {
     user?.fullName ||
     `${user?.firstName || ''} ${user?.lastName || ''}`.trim() ||
     user?.email ||
-    'Patient'
+    t('inquiries.patientFallback', 'Patient')
 
   const getStatusLabel = (status, statusText) => {
     if (statusText) return statusText
     switch (status) {
       case 1:
-        return 'Submitted'
+        return t('inquiries.statusSubmitted', 'Submitted')
       case 2:
-        return 'In Review'
+        return t('inquiries.statusInReview', 'In Review')
       case 3:
-        return 'Processing'
+        return t('inquiries.statusProcessing', 'Processing')
       case 4:
-        return 'Offer Received'
+        return t('inquiries.statusOfferReceived', 'Offer Received')
       case 5:
-        return 'Accepted'
+        return t('inquiries.statusAccepted', 'Accepted')
       case 6:
-        return 'Declined'
+        return t('inquiries.statusDeclined', 'Declined')
       case 7:
-        return 'Closed'
+        return t('inquiries.statusClosed', 'Closed')
       case 8:
-        return 'Cancelled'
+        return t('inquiries.statusCancelled', 'Cancelled')
       default:
-        return 'In Review'
+        return t('inquiries.statusInReview', 'In Review')
     }
   }
 
@@ -73,15 +75,15 @@ export default function InquiriesPage() {
             to="/en/my-profile"
             className="font-medium text-[#0a295b] transition-colors hover:text-[#3665f6]"
           >
-            My Profile
+            {t('common.myProfile')}
           </Link>
           <span className="text-[#c0c0c0]">•</span>
-          <span className="font-medium text-[#3665f6]">Inquiries</span>
+          <span className="font-medium text-[#3665f6]">{t('common.myInquiries')}</span>
         </nav>
 
         {/* Welcome Header matching ZagrebMed 1:1 */}
         <div className="mb-14">
-          <h2 className="text-[1.8rem] font-bold text-[#0c3a94]">Welcome back</h2>
+          <h2 className="text-[1.8rem] font-bold text-[#0c3a94]">{t('inquiries.title')}</h2>
           <h1 className="mt-1 text-[4.2rem] font-bold tracking-tight text-[#3665f6] sm:text-[5.2rem]">
             {displayName}
           </h1>
@@ -95,7 +97,7 @@ export default function InquiriesPage() {
         ) : inquiries.length === 0 ? (
           <div className="border-t border-[#e5e7eb] py-14 text-center">
             <p className="text-[1.6rem] text-[#666666]">
-              You have not submitted any inquiries yet.
+              {t('inquiries.empty')}
             </p>
           </div>
         ) : (
@@ -104,16 +106,16 @@ export default function InquiriesPage() {
               <thead>
                 <tr className="border-b border-[#e5e7eb]">
                   <th className="py-4 pr-6 text-[1.2rem] font-semibold tracking-wider text-[#707070] uppercase">
-                    INQUIRY
+                    {t('inquiries.colInquiry', 'INQUIRY')}
                   </th>
                   <th className="px-6 py-4 text-[1.2rem] font-semibold tracking-wider text-[#707070] uppercase">
-                    STATUS
+                    {t('inquiries.colStatus', 'STATUS')}
                   </th>
                   <th className="px-6 py-4 text-[1.2rem] font-semibold tracking-wider text-[#707070] uppercase">
-                    ASSIGNED HOSPITAL
+                    {t('inquiries.colHospital', 'ASSIGNED HOSPITAL')}
                   </th>
                   <th className="px-6 py-4 text-[1.2rem] font-semibold tracking-wider text-[#707070] uppercase">
-                    PROCEDURE
+                    {t('inquiries.colProcedure', 'PROCEDURE')}
                   </th>
                   <th className="py-4 pl-6 text-right" />
                 </tr>
@@ -137,7 +139,7 @@ export default function InquiriesPage() {
                         {inq.clinicName || 'Viaorto'}
                       </td>
                       <td className="max-w-[260px] px-6 py-6 text-[1.5rem] font-bold text-[#0a295b]">
-                        {inq.serviceTitle || inq.symptoms || 'Medical Consultation'}
+                        {inq.serviceTitle || inq.symptoms || t('inquiries.consultationFallback', 'Medical Consultation')}
                       </td>
                       <td className="py-6 pl-6 text-right">
                         <button
@@ -145,7 +147,7 @@ export default function InquiriesPage() {
                           onClick={() => navigate(`/en/my-profile/${inq.id}`)}
                           className="inline-flex cursor-pointer items-center justify-center rounded-[8px] border border-[#3665f6] bg-white px-7 py-2.5 text-[1.4rem] font-semibold text-[#3665f6] transition-colors hover:bg-[#3665f6] hover:text-white"
                         >
-                          View Inquiry
+                          {t('inquiries.viewInquiry', 'View Inquiry')}
                         </button>
                       </td>
                     </tr>

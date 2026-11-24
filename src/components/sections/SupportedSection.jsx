@@ -1,11 +1,13 @@
 import { SUPPORTED_BY } from '../../data/homeData'
+import { useTranslation } from '../../hooks/useTranslation'
 
 export default function SupportedSection() {
+  const { t } = useTranslation()
   return (
     <section className="mt-[90px] md:mt-[120px]">
       <div className="zm-container">
         <h2 className="text-[4.8rem] font-semibold leading-[1] text-[#0c3a94] md:text-[8.2rem]">
-          Supported by
+          {t('home.supportedTitle', 'Supported by')}
         </h2>
 
         <div className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-4 md:gap-12">

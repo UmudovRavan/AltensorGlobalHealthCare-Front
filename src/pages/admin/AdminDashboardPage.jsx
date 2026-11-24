@@ -19,6 +19,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import AdminDashboardOverview from '../../components/admin/AdminDashboardOverview'
 import AdminEntityModal from '../../components/admin/AdminEntityModal'
+import { AdminCmsTab, AdminContactMessagesTab } from '../../components/admin/AdminCmsTab'
+import AdminServicesTreeTab from '../../components/admin/AdminServicesTreeTab'
 import AltensorLogo from '../../components/common/AltensorLogo'
 import { useAuth } from '../../hooks/useAuth'
 import { useTranslation } from '../../hooks/useTranslation'
@@ -94,7 +96,7 @@ export default function AdminDashboardPage() {
   const [clinicForm, setClinicForm] = useState({
     name: '',
     slug: '',
-    city: 'Zagreb',
+    city: 'Baku',
     address: '',
     phone: '',
     email: '',
@@ -184,8 +186,14 @@ export default function AdminDashboardPage() {
         setDoctors(docList || [])
         setClinics(clinicList || [])
       } else if (activeTab === 'categories') {
-        const catList = await adminService.getCategories()
+        const [catList, clinicList, docList] = await Promise.all([
+          adminService.getCategories(),
+          adminService.getClinics().catch(() => []),
+          adminService.getDoctors().catch(() => []),
+        ])
         setCategories(catList || [])
+        setClinics(clinicList || [])
+        setDoctors(docList || [])
       } else if (activeTab === 'packages') {
         const pkgList = await adminService.getPackages()
         setPackages(pkgList || [])
@@ -317,7 +325,7 @@ export default function AdminDashboardPage() {
     setClinicForm({
       name: '',
       slug: '',
-      city: 'Zagreb',
+      city: 'Baku',
       address: '',
       phone: '',
       email: '',
@@ -334,7 +342,7 @@ export default function AdminDashboardPage() {
     setClinicForm({
       name: c.name || '',
       slug: c.slug || '',
-      city: c.city || 'Zagreb',
+      city: c.city || 'Baku',
       address: c.address || '',
       phone: c.phone || '',
       email: c.email || '',
@@ -513,6 +521,8 @@ export default function AdminDashboardPage() {
     { id: 'doctors', label: t('admin.nav.doctors'), icon: Stethoscope },
     { id: 'categories', label: t('admin.nav.categories'), icon: FolderTree },
     { id: 'packages', label: t('admin.nav.packages'), icon: Package },
+    { id: 'cms', label: 'About Us & CMS', icon: FileText },
+    { id: 'messages', label: 'Contact Messages', icon: Send },
   ]
 
   return (
@@ -780,7 +790,7 @@ export default function AdminDashboardPage() {
                               <div>
                                 <h3 className="text-[1.75rem] font-bold text-[#0c3a94]">{c.name}</h3>
                                 <p className="text-[1.25rem] font-semibold text-[#3665f6]">
-                                  {c.city || 'Zagreb'}
+                                  {c.city || 'Baku'}
                                 </p>
                               </div>
                             </div>
@@ -893,84 +903,21 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* TAB 5: CATEGORIES & SERVICES */}
+              {/* TAB 5: CATEGORIES & SERVICES (3-Level Tree + 4-Tab Editor) */}
               {activeTab === 'categories' && (
-                <div className="rounded-[12px] border border-[#e8edf5] bg-white p-6 shadow-xs">
-                  <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-                    <h2 className="text-[2rem] font-bold text-[#0c3a94]">
-                      Medical Categories & Services
-                    </h2>
-                    <div className="flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setModalType('category')}
-                        className="cursor-pointer rounded-[8px] border border-[#3665f6] px-5 py-2.5 text-[1.35rem] font-semibold text-[#3665f6] hover:bg-[#3665f6] hover:text-white"
-                      >
-                        + Add Category
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setServiceForm((prev) => ({
-                            ...prev,
-                            categoryId: categories?.[0]?.id || '',
-                          }))
-                          setModalType('service')
-                        }}
-                        className="zm-btn zm-btn-green rounded-[8px] !px-5 !py-2.5 !text-[1.35rem]"
-                      >
-                        <span>+ Add Service</span>
-                      </button>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    {categories.map((cat) => (
-                      <div
-                        key={cat.id}
-                        className="rounded-[10px] border border-[#e8edf5] bg-[#fafbfc] p-5"
-                      >
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-[1.7rem] font-bold text-[#0c3a94]">{cat.name}</h3>
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              await adminService.deleteCategory(cat.id)
-                              showToast('Category deleted')
-                              loadTabData()
-                            }}
-                            className="cursor-pointer text-[1.3rem] font-semibold text-red-600 hover:underline"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                        {cat.services && cat.services.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {cat.services.map((srv) => (
-                              <span
-                                key={srv.id}
-                                className="inline-flex items-center gap-2 rounded-full border border-[#d1d5db] bg-white px-3.5 py-1 text-[1.25rem] font-semibold text-[#0a295b]"
-                              >
-                                {srv.title}
-                                <button
-                                  type="button"
-                                  onClick={async () => {
-                                    await adminService.deleteService(srv.id)
-                                    showToast('Service deleted')
-                                    loadTabData()
-                                  }}
-                                  className="cursor-pointer text-red-500 hover:text-red-700"
-                                >
-                                  ×
-                                </button>
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <AdminServicesTreeTab
+                  clinics={clinics}
+                  doctors={doctors}
+                  packages={packages}
+                  showToast={showToast}
+                />
               )}
+
+              {/* TAB 7: ABOUT US & CMS */}
+              {activeTab === 'cms' && <AdminCmsTab showToast={showToast} />}
+
+              {/* TAB 8: CONTACT MESSAGES */}
+              {activeTab === 'messages' && <AdminContactMessagesTab showToast={showToast} />}
 
               {/* TAB 6: PACKAGES */}
               {activeTab === 'packages' && (

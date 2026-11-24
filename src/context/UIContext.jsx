@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import { UIContext } from './uiStore'
 
 export function UIProvider({ children }) {
+  const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
   const [inquiryOpen, setInquiryOpen] = useState(false)
   const [inquirySubject, setInquirySubject] = useState('')
   const [authOpen, setAuthOpen] = useState(false)
@@ -23,6 +27,10 @@ export function UIProvider({ children }) {
   }
 
   const openInquiry = (subject = '') => {
+    if (!isAuthenticated) {
+      navigate('/en/plan', { state: { subject } })
+      return
+    }
     setInquirySubject(subject)
     setInquiryOpen(true)
   }

@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { MOST_SEARCHED } from '../../data/homeData'
+import { useTranslation } from '../../hooks/useTranslation'
 
 export default function SearchSection() {
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -16,10 +18,10 @@ export default function SearchSection() {
     <section className="my-[120px] w-full bg-[#3665f6] py-[90px] md:my-[180px] md:py-[110px]">
       <div className="zm-container">
         <h2 className="text-[4.8rem] font-semibold leading-[1] text-white md:text-[8.2rem]">
-          Search
+          {t('common.search', 'Search')}
         </h2>
         <p className="mt-4 text-[2.2rem] font-medium text-white/95 md:text-[3.6rem]">
-          Search for treatment, doctor or hospital
+          {t('home.searchTitle')}
         </p>
 
         <form
@@ -27,7 +29,7 @@ export default function SearchSection() {
           className="mt-8 flex max-w-[1040px] flex-col gap-3 sm:flex-row"
         >
           <label htmlFor="home-search-input" className="sr-only">
-            Search for treatment, doctor or hospital
+            {t('home.searchTitle')}
           </label>
           <input
             id="home-search-input"
@@ -35,11 +37,11 @@ export default function SearchSection() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Type of treatment / offer / doctor"
+            placeholder={t('home.searchPlaceholder')}
             className="flex-1 rounded-[8px] bg-white px-6 py-4 text-[1.6rem] text-[#0a295b] outline-none placeholder:text-[#888888]"
           />
           <button type="submit" className="zm-btn zm-btn-green-on-blue shrink-0">
-            <span>Search</span>
+            <span>{t('home.searchButton', 'Search')}</span>
           </button>
         </form>
 

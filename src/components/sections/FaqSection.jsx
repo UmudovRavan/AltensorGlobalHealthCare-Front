@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HOME_FAQS } from '../../data/homeData'
+import { useTranslation } from '../../hooks/useTranslation'
 import { SwiperArrowIcon } from '../common/ZagrebIcons'
 
-export default function FaqSection({ items = HOME_FAQS, compact = false }) {
+export default function FaqSection({ items, compact = false }) {
   const [openIndex, setOpenIndex] = useState(null)
+  const { t } = useTranslation()
+  const translatedItems = t('homeFaqs.items', HOME_FAQS)
+  const list = items || (Array.isArray(translatedItems) ? translatedItems : HOME_FAQS)
+  const heading = items ? 'F.A.Q.' : t('homeFaqs.heading', 'F.A.Q.')
 
   const toggle = (idx) => {
     setOpenIndex((prev) => (prev === idx ? null : idx))
@@ -15,11 +20,11 @@ export default function FaqSection({ items = HOME_FAQS, compact = false }) {
       <div className="zm-container">
         <div className="rounded-[19px] bg-[#d4d4d4]/20 px-[28px] pt-[28px] pb-[20px] backdrop-blur-[8px] md:px-[50px] md:pt-[50px] md:pb-[34px]">
           <h2 className="text-[4.8rem] font-semibold leading-[1] text-[#0c3a94] md:text-[8.2rem]">
-            F.A.Q.
+            {heading}
           </h2>
 
           <div className="mt-8">
-            {items.map((item, idx) => {
+            {list.map((item, idx) => {
               const isOpen = openIndex === idx
               return (
                 <div

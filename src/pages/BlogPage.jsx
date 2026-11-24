@@ -2,10 +2,12 @@ import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { BLOG_POSTS } from '../data/blog'
+import { useTranslation } from '../hooks/useTranslation'
 
 export default function BlogPage() {
   const { slug } = useParams()
   const [copied, setCopied] = useState(false)
+  const { t } = useTranslation()
 
   if (slug) {
     const post = BLOG_POSTS.find((p) => p.slug === slug) || BLOG_POSTS[0]
@@ -19,8 +21,8 @@ export default function BlogPage() {
     return (
       <article className="zm-container py-16">
         <nav className="mb-6 text-[1.3rem] text-[#666666]">
-          <Link to="/en" className="text-[#3665f6] hover:underline">Home</Link> /{' '}
-          <Link to="/en/blog" className="text-[#3665f6] hover:underline">Blog</Link> /{' '}
+          <Link to="/en" className="text-[#3665f6] hover:underline">{t('about.home')}</Link> /{' '}
+          <Link to="/en/blog" className="text-[#3665f6] hover:underline">{t('nav.blog')}</Link> /{' '}
           <span>{post.title}</span>
         </nav>
 
